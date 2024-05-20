@@ -1,17 +1,46 @@
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { createTheme, ThemeProvider  } from '@mui/material/styles';
+
+
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#8F97DE',
+    },
+    secondary: {
+      main:  '#C9FA76',
+    },
+    tertiary: {
+      main: '#ffffff',
+    },
+    border: {
+      main: '#D4D6CF',
+    },
+    text: {
+      onContrast: '#ffffff',
+      standard: '#415050',
+    }
+  },
+  shadows: [
+    "none",
+    "0px 1px 2px rgba(0, 0, 0, 0.15)",
+    "0px 2px 4px rgba(0, 0, 0, 0.15)",
+    "0px 4px 6px rgba(0, 0, 0, 0.15)",
+    "0px 6px 8px rgba(0, 0, 0, 0.15)",
+    ...Array(20).fill('none')
+  ],
+});
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <ThemeProvider theme={theme}><App /></ThemeProvider>
   </React.StrictMode>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
