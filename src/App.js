@@ -13,7 +13,6 @@ import ListItemText from '@mui/material/ListItemText';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import AccordionList from './components/Bookings/AccordionList';
 import Content from './components/Content';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -141,7 +140,6 @@ export default function App(props) {
       >
         <Toolbar />
         <Content/>
-        <FormDialog/>
       </Box>
     </Box>
   );

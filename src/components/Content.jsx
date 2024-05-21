@@ -1,12 +1,11 @@
 import React from 'react'
-import AccordionList from './Bookings/AccordionList'
-import BookingsToolbar from './Bookings/BookingsToolBar'
+import Bookings from './Bookings/Bookings'
+
 
 const Content = () => {
   return (
     <div>
-        <BookingsToolbar/>
-        <AccordionList/>
+        <Bookings/>
     </div>
   )
 }

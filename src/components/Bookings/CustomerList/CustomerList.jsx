@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styles from './AccordionList.module.css'
+import styles from './CustomerList.module.css'
 import { styled } from '@mui/material/styles';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import MuiAccordion from '@mui/material/Accordion';
@@ -11,8 +11,7 @@ import MuiListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import { Chip, IconButton, TextField } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import Searchbar from './Searchbar';
+import Searchbar from '../Searchbar';
 
 const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -59,7 +58,7 @@ const BookingsListItem = styled(MuiListItem)(({ theme }) => ({
   paddingLeft: '24px',
 }));
 
-export default function AccordionList() {
+export default function CustomerList() {
 
 
   return (
