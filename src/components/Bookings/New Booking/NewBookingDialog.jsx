@@ -5,13 +5,17 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Button, createFilterOptions } from "@mui/material";
+import { Button, TextField, createFilterOptions } from "@mui/material";
 import CustomerSearch from "./CustomerSearch";
 
 const filter = createFilterOptions();
 
 const NewBookingDialog = ({ visible, handleClose }) => {
-  const handleSubmit = () => {};
+  const [newCustomer, setNewCustomer] = React.useState(false);
+
+  const showNewCustomer = () => {
+    setNewCustomer(true);
+  };
 
   return (
     <Fragment>
@@ -32,19 +36,44 @@ const NewBookingDialog = ({ visible, handleClose }) => {
           },
         }}
       >
-        <form onSubmit={handleSubmit}>
-          <DialogTitle>New Booking</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              To create a new booking, please enter your name.
-            </DialogContentText>
-            <CustomerSearch />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button type="submit">Book</Button>
-          </DialogActions>
-        </form>
+        <DialogTitle>New Booking</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            To create a new booking, please enter your name.
+          </DialogContentText>
+          {!newCustomer ? (
+            <CustomerSearch handleNewCustomerSelected={showNewCustomer} />
+          ) : (
+            <Fragment>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="vorname"
+                label="Vorname"
+                type="text"
+                variant="standard"
+              />
+              <TextField
+                margin="dense"
+                id="nachname"
+                label="Nachname"
+                type="text"
+                variant="standard"
+              />
+              <TextField
+                margin="dense"
+                id="email"
+                label="Email"
+                type="text"
+                variant="standard"
+              />
+            </Fragment>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button type="submit">Book</Button>
+        </DialogActions>
       </Dialog>
     </Fragment>
   );
