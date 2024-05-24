@@ -20,19 +20,36 @@ const colorOfNewCustomer = (label) => {
   else return "#000000";
 };
 
-const CustomerSearch = ({ handleNewCustomerSelected }) => {
+const CustomerSearch = ({
+  handleNewCustomerSelected,
+  handleCustomerSelected,
+}) => {
+  const [data, setData] = React.useState([]);
+  React.useEffect(() => {
+    fetch("http://localhost:8081/customers")
+      .then((resp) => {
+        return resp.json();
+      })
+      .then((res) => {
+        setData(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   return (
     <Fragment>
       <Autocomplete
         freeSolo
         id="free-solo-2-demo"
         disableClearable
-        options={customers}
+        options={data}
         onChange={(event, newValue) => {
           setTimeout(() => {
-            console.log(newValue);
             if (newCustomerOptionSelected(newValue.Vorname))
               handleNewCustomerSelected();
+            else handleCustomerSelected(newValue);
           });
         }}
         getOptionLabel={(option) => {

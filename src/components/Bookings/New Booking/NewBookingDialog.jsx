@@ -10,29 +10,60 @@ import CustomerSearch from "./CustomerSearch";
 
 const filter = createFilterOptions();
 
-const NewBookingDialog = ({ visible, handleClose }) => {
+const NewBookingDialog = ({ visible, callbackClose }) => {
   const [newCustomer, setNewCustomer] = React.useState(false);
+  const [selectedCustomerData, setSelectedCustomerData] = React.useState({
+    vorname: "",
+    nachname: "",
+    email: "",
+  });
 
   const showNewCustomer = () => {
     setNewCustomer(true);
+  };
+
+  const handleClose = () => {
+    setNewCustomer(false);
+    callbackClose();
+  };
+
+  const handleCustomerSelected = (data) => {
+    setSelectedCustomerData({
+      ...selectedCustomerData,
+      vorname: data.Vorname,
+      nachname: data.Nachname,
+      email: data.Email,
+    });
+  };
+
+  const handleSubmit = (data) => {
+    if (newCustomer) {
+      /*wenn ein neuer Kunde angelegt wurde, dann muss hier der neue Datenbankeintrag für Kunde angelegt werden 
+      und dann erst die Buchung angelegt werden*/
+      console.log("new " + data.vorname);
+      const vorname = data.vorname;
+      const nachname = data.nachname;
+      const email = data.email;
+      handleClose();
+    } else {
+      /*wenn ein vorhandener Kund selektiert wurde kann direkt eine Buchung mit dem Kunden erzeugt werden
+      Die Daten für den ausgewählten Kunden sind in selectedCustomerData enthalten. 
+      Aber Vorsicht! Ein neuer Kunde wird nicht in der Variable gepflegt*/
+    }
   };
 
   return (
     <Fragment>
       <Dialog
         open={visible}
-        onClose={handleClose}
+        onClose={callbackClose}
         PaperProps={{
           component: "form",
           onSubmit: (event) => {
             event.preventDefault();
             const formData = new FormData(event.currentTarget);
             const formJson = Object.fromEntries(formData.entries());
-            const lastName = formJson.lastName;
-            const firstName = formJson.firstName;
-            console.log(lastName);
-            console.log(firstName);
-            handleClose();
+            handleSubmit(formJson);
           },
         }}
       >
@@ -42,13 +73,17 @@ const NewBookingDialog = ({ visible, handleClose }) => {
             To create a new booking, please enter your name.
           </DialogContentText>
           {!newCustomer ? (
-            <CustomerSearch handleNewCustomerSelected={showNewCustomer} />
+            <CustomerSearch
+              handleNewCustomerSelected={showNewCustomer}
+              handleCustomerSelected={handleCustomerSelected}
+            />
           ) : (
             <Fragment>
               <TextField
                 autoFocus
                 margin="dense"
                 id="vorname"
+                name="vorname"
                 label="Vorname"
                 type="text"
                 variant="standard"
@@ -56,6 +91,7 @@ const NewBookingDialog = ({ visible, handleClose }) => {
               <TextField
                 margin="dense"
                 id="nachname"
+                name="nachname"
                 label="Nachname"
                 type="text"
                 variant="standard"
@@ -63,6 +99,7 @@ const NewBookingDialog = ({ visible, handleClose }) => {
               <TextField
                 margin="dense"
                 id="email"
+                name="email"
                 label="Email"
                 type="text"
                 variant="standard"

@@ -45,7 +45,7 @@ const BookingsToolBar = () => {
           </Grid>
         </Grid>
       </Grid>
-      <NewBookingDialog visible={newBookingOpen} handleClose={handleClose} />
+      <NewBookingDialog visible={newBookingOpen} callbackClose={handleClose} />
     </div>
   );
 };
