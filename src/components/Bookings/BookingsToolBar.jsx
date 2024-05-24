@@ -1,94 +1,53 @@
-import React from 'react'
-import styles from './BookingsToolBar.module.css'
-import AddIcon from '@mui/icons-material/Add';
-import { Button, Toolbar } from '@mui/material'
-import Grid from '@mui/material/Unstable_Grid2'
-import FilterListIcon from '@mui/icons-material/FilterList';
-import PrimaryButton from '../BasicControls/PrimaryButton';
-import SecondaryButton from '../BasicControls/SecondaryButton';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import React from "react";
+import styles from "./BookingsToolBar.module.css";
+import AddIcon from "@mui/icons-material/Add";
+import Grid from "@mui/material/Unstable_Grid2";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import NewBookingDialog from "./New Booking/NewBookingDialog";
+import MyButton from "../BasicControls/MyButton";
 
 const BookingsToolBar = () => {
-  const [newBookingOpen, setOpen] = React.useState(false);
+  const [newBookingOpen, setNewBookingOpen] = React.useState(false);
 
   const handleNewBooking = () => {
-    setOpen(true);
+    setNewBookingOpen(true);
   };
 
   const handleClose = () => {
-    setOpen(false);
+    setNewBookingOpen(false);
   };
 
   return (
     <div className={styles.toolbar}>
-      <Grid container spacing={2} sx={{justifyContent:'space-between'}}>
+      <Grid container spacing={2} sx={{ justifyContent: "space-between" }}>
         <Grid container spacing={2}>
-          <Grid><SecondaryButton label="Switch animal"/></Grid>
-          <Grid><SecondaryButton label="Switch period"/></Grid>
+          <Grid>
+            <MyButton type="secondary">Switch animal</MyButton>
+          </Grid>
+          <Grid>
+            <MyButton type="secondary">Switch period</MyButton>
+          </Grid>
         </Grid>
         <Grid container spacing={2}>
-        <Grid><SecondaryButton label="Filter" icon={<FilterListIcon/>}/></Grid>
-          <Grid><PrimaryButton label="New Booking" icon={<AddIcon/>} onClick={handleNewBooking}/></Grid>
+          <Grid>
+            <MyButton type="secondary" icon={<FilterListIcon />}>
+              Filter
+            </MyButton>
+          </Grid>
+          <Grid>
+            <MyButton
+              type="primary"
+              icon={<AddIcon />}
+              onClick={handleNewBooking}
+            >
+              New Booking
+            </MyButton>
+          </Grid>
         </Grid>
-        </Grid>
-
-        <Dialog
-        open={newBookingOpen}
-        onClose={handleClose}
-        PaperProps={{
-          component: 'form',
-          onSubmit: (event) => {
-            event.preventDefault();
-            const formData = new FormData(event.currentTarget);
-            const formJson = Object.fromEntries((formData).entries());
-            const lastName = formJson.lastName;
-            const firstName = formJson.firstName;
-            console.log(lastName);
-            console.log(firstName);
-            handleClose();
-          },
-        }}
-      >
-        <DialogTitle>New Booking</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            To create a new booking, please enter your name.
-          </DialogContentText>
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="name"
-            name="lastName"
-            label="Last name"
-            type="lastName"
-            fullWidth
-            variant="standard"
-          />
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="name"
-            name="firstName"
-            label="First name"
-            type="firstName"
-            fullWidth
-            variant="standard"
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button type="submit">Book</Button>
-        </DialogActions>
-      </Dialog>
+      </Grid>
+      <NewBookingDialog visible={newBookingOpen} handleClose={handleClose} />
     </div>
-  )
-}
+  );
+};
 
-export default BookingsToolBar
+export default BookingsToolBar;
