@@ -5,7 +5,6 @@ import { BarChart } from "@mui/x-charts/BarChart";
 const Capacity = () => {
   return (
     <div className={styles.capacity}>
-      Capacity
       <BarChart
         margin={{ top: 0, left: 0, right: 0, bottom: 0 }}
         series={[

@@ -6,6 +6,7 @@ import Capacity from "./Capacity/Capacity";
 import CustomerList from "./CustomerList/CustomerList";
 
 import { Box } from "@mui/material";
+import BarchartNegative from "./Capacity/BarcharNegative";
 
 const Bookings = () => {
   return (
@@ -26,12 +27,16 @@ const Bookings = () => {
       <Capacity gridColumn="1 / 3" gridRow="3 / 4" bgcolor="gray" />
     </Box>*/
     <Box className={styles.container}>
-      <BookingsToolbar className={styles.toolbar} />
-      <Box className={styles.bookingoverview}>
-        <CustomerList className={styles.customerList} />
-        <Timeline className={styles.timeline} />
+      <BookingsToolbar className={styles.header} />
+      <Box className={styles.main}>
+        <CustomerList className={styles.nav} />
+        <Box className={styles.charts}>
+          <BarchartNegative className={styles.footer} />
+          <container className={styles.scalefix}>
+            <Timeline className={styles.timeline} />
+          </container>
+        </Box>
       </Box>
-      <Capacity className={styles.capacity} />
     </Box>
   );
 };

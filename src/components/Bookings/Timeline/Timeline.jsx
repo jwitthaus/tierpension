@@ -1,6 +1,6 @@
 import React from "react";
-import styles from "./Timeline.module.css";
 import { useState } from "react";
+import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
 import ReactApexChart from "react-apexcharts";
 import moment from "moment";
 
@@ -10,12 +10,76 @@ const Timeline = () => {
       {
         data: [
           {
+            x: "18",
+            y: [
+              new Date("2019-02-25").getTime(),
+              new Date("2019-02-29").getTime(),
+            ],
+            fillColor: "#ffffff",
+          },
+          {
+            x: "19",
+            y: [
+              new Date("2019-02-26").getTime(),
+              new Date("2019-03-04").getTime(),
+            ],
+            fillColor: "#ffffff",
+          },
+          {
+            x: "20",
+            y: [
+              new Date("2019-02-26").getTime(),
+              new Date("2019-03-04").getTime(),
+            ],
+            fillColor: "#ffffff",
+          },
+          {
+            x: "Anna Anntreter",
+            y: [
+              new Date("2019-02-26").getTime(),
+              new Date("2019-03-04").getTime(),
+            ],
+            fillColor: "#ffffff",
+          },
+          {
             x: "Analysis",
             y: [
               new Date("2019-02-27").getTime(),
-              new Date("2019-03-04").getTime(),
+              new Date("2019-03-05").getTime(),
             ],
-            fillColor: "#008FFB",
+            fillColor: "#ffffff",
+          },
+          {
+            x: "2",
+            y: [
+              new Date("2019-02-29").getTime(),
+              new Date("2019-03-03").getTime(),
+            ],
+            fillColor: "#ffffff",
+          },
+          {
+            x: "3",
+            y: [
+              new Date("2019-03-01").getTime(),
+              new Date("2019-03-05").getTime(),
+            ],
+            fillColor: "#ffffff",
+          },
+          {
+            x: "4",
+            y: [
+              new Date("2019-03-01").getTime(),
+              new Date("2019-03-03").getTime(),
+            ],
+            fillColor: "#ffffff",
+          },
+          {
+            x: "5",
+            y: [
+              new Date("2019-02-30").getTime(),
+              new Date("2019-03-18").getTime(),
+            ],
+            fillColor: "#ffffff",
           },
           {
             x: "Design",
@@ -23,7 +87,23 @@ const Timeline = () => {
               new Date("2019-03-04").getTime(),
               new Date("2019-03-08").getTime(),
             ],
-            fillColor: "#00E396",
+            fillColor: "#ffffff",
+          },
+          {
+            x: "8",
+            y: [
+              new Date("2019-03-04").getTime(),
+              new Date("2019-03-10").getTime(),
+            ],
+            fillColor: "#ffffff",
+          },
+          {
+            x: "9",
+            y: [
+              new Date("2019-03-04").getTime(),
+              new Date("2019-03-10").getTime(),
+            ],
+            fillColor: "#ffffff",
           },
           {
             x: "Coding",
@@ -31,7 +111,15 @@ const Timeline = () => {
               new Date("2019-03-07").getTime(),
               new Date("2019-03-10").getTime(),
             ],
-            fillColor: "#775DD0",
+            fillColor: "#ffffff",
+          },
+          {
+            x: "11",
+            y: [
+              new Date("2019-03-07").getTime(),
+              new Date("2019-03-16").getTime(),
+            ],
+            fillColor: "#ffffff",
           },
           {
             x: "Testing",
@@ -39,7 +127,39 @@ const Timeline = () => {
               new Date("2019-03-08").getTime(),
               new Date("2019-03-12").getTime(),
             ],
-            fillColor: "#FEB019",
+            fillColor: "#ffffff",
+          },
+          {
+            x: "12",
+            y: [
+              new Date("2019-03-08").getTime(),
+              new Date("2019-03-20").getTime(),
+            ],
+            fillColor: "#ffffff",
+          },
+          {
+            x: "13",
+            y: [
+              new Date("2019-03-08").getTime(),
+              new Date("2019-03-17").getTime(),
+            ],
+            fillColor: "#ffffff",
+          },
+          {
+            x: "14",
+            y: [
+              new Date("2019-03-09").getTime(),
+              new Date("2019-03-14").getTime(),
+            ],
+            fillColor: "#ffffff",
+          },
+          {
+            x: "15",
+            y: [
+              new Date("2019-03-10").getTime(),
+              new Date("2019-03-19").getTime(),
+            ],
+            fillColor: "#ffffff",
           },
           {
             x: "Deployment",
@@ -47,7 +167,7 @@ const Timeline = () => {
               new Date("2019-03-12").getTime(),
               new Date("2019-03-17").getTime(),
             ],
-            fillColor: "#FF4560",
+            fillColor: "#ffffff",
           },
         ],
       },
@@ -56,9 +176,13 @@ const Timeline = () => {
       chart: {
         height: 350,
         type: "rangeBar",
+        toolbar: {
+          show: false,
+        },
       },
       plotOptions: {
         bar: {
+          borderRadius: 8,
           horizontal: true,
           distributed: true,
           dataLabels: {
@@ -76,7 +200,7 @@ const Timeline = () => {
           return label + ": " + diff + (diff > 1 ? " days" : " day");
         },
         style: {
-          colors: ["#f3f4f5", "#fff"],
+          colors: ["#000000"],
         },
       },
       xaxis: {
@@ -87,7 +211,7 @@ const Timeline = () => {
       },
       grid: {
         row: {
-          colors: ["#f3f4f5", "#fff"],
+          colors: ["#f3f4f5"],
           opacity: 1,
         },
       },
@@ -98,6 +222,8 @@ const Timeline = () => {
       options={state.options}
       series={state.series}
       type="rangeBar"
+      height={"100%"}
+      width={"100%"}
     />
   );
 };
