@@ -1,13 +1,8 @@
-import React from 'react'
-import Bookings from './Bookings/Bookings'
-
+import React from "react";
+import Bookings from "./Bookings/Bookings";
 
 const Content = () => {
-  return (
-    <div>
-        <Bookings/>
-    </div>
-  )
-}
+  return <Bookings height="100%" />;
+};
 
-export default Content
+export default Content;

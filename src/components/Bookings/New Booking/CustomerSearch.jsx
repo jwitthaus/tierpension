@@ -1,4 +1,7 @@
 import React, { Fragment } from "react";
+import { useState } from "react";
+import { useEffect } from "react";
+import axios from "axios";
 import {
   Autocomplete,
   ListItem,
@@ -24,18 +27,17 @@ const CustomerSearch = ({
   handleNewCustomerSelected,
   handleCustomerSelected,
 }) => {
-  const [data, setData] = React.useState([]);
-  React.useEffect(() => {
-    fetch("http://localhost:8081/customers")
-      .then((resp) => {
-        return resp.json();
-      })
-      .then((res) => {
-        setData(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    const fetchAllCustomers = async () => {
+      try {
+        const res = await axios.get("http://localhost:8081/customers");
+        setData(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchAllCustomers();
   }, []);
 
   return (
@@ -71,7 +73,7 @@ const CustomerSearch = ({
         renderInput={(params) => (
           <TextField
             {...params}
-            label="Search input"
+            label="search for customer name"
             InputProps={{
               ...params.InputProps,
               type: "search",
@@ -96,16 +98,5 @@ const CustomerSearch = ({
     </Fragment>
   );
 };
-
-const customers = [
-  {
-    //id is necessary to give each list item a key
-    id: 1,
-    Vorname: "Jörg",
-    Nachname: "Witthaus",
-    Email: "joerg.witthaus@gmail.com",
-  },
-  { id: 2, Vorname: "Holger", Nachname: "Witthaus", Email: "holwi@online.de" },
-];
 
 export default CustomerSearch;

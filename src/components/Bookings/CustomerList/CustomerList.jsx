@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styles from "./CustomerList.module.css";
 import { styled } from "@mui/material/styles";
 import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
@@ -10,7 +10,7 @@ import List from "@mui/material/List";
 import MuiListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
-import { Chip, IconButton, TextField } from "@mui/material";
+import { Chip } from "@mui/material";
 import Searchbar from "../Searchbar";
 
 const Accordion = styled((props) => (
@@ -56,13 +56,16 @@ const BookingsListItem = styled(MuiListItem)(({ theme }) => ({
 }));
 
 export default function CustomerList() {
-  const [data, setData] = useState([]);
-  useEffect(() => {
+  const [data, setData] = useState([
+    { Vorname: "Jörg", Nachname: "Witthaus", id: 1 },
+    { Vorname: "Holger", Nachname: "Witthaus", id: 2 },
+  ]);
+  /*useEffect(() => {
     fetch("http://localhost:8081/customers")
       .then((res) => res.json())
       .then((data) => setData(data))
       .catch((err) => console.log(err));
-  }, []);
+  }, []);*/
 
   return (
     <div className={styles.accordionList}>
@@ -77,7 +80,7 @@ export default function CustomerList() {
         <AccordionDetails>
           <List disablePadding>
             {data.map((d, i) => (
-              <RequestListItem disablePadding key={i}>
+              <RequestListItem disablePadding key={d.id}>
                 <ListItemButton>
                   <ListItemText
                     sx={{ paddingLeft: 3 }}

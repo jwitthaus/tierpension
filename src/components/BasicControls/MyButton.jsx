@@ -45,7 +45,6 @@ const Button = styled(MuiButton, {
   ],
 })(({ theme }) => ({
   backgroundColor: "aliceblue",
-  padding: theme.spacing(1),
   borderRadius: "12px",
   height: "48px",
   padding: "16px",

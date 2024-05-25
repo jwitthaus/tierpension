@@ -21,7 +21,8 @@ import PaymentIcon from "@mui/icons-material/Payment";
 const drawerWidth = 240;
 
 export default function App(props) {
-  const { window } = props;
+  //was hat es hiermit auf sich? Diese wird nirgendwo verwendet
+  //const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
 
@@ -74,7 +75,7 @@ export default function App(props) {
   );
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", height: "100%" }}>
       <CssBaseline />
       <AppBar
         position="fixed"
