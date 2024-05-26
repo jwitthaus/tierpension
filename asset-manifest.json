@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/tierpension/static/css/main.a5385832.css",
-    "main.js": "/tierpension/static/js/main.0183d19b.js",
+    "main.js": "/tierpension/static/js/main.c34b2816.js",
     "static/media/roboto-latin-500-normal.woff2": "/tierpension/static/media/roboto-latin-500-normal.f25d774ecfe0996f8eb5.woff2",
     "static/media/roboto-latin-700-normal.woff2": "/tierpension/static/media/roboto-latin-700-normal.227c93190fe7f82de3f8.woff2",
     "static/media/roboto-latin-400-normal.woff2": "/tierpension/static/media/roboto-latin-400-normal.b009a76ad6afe4ebd301.woff2",
@@ -60,10 +60,10 @@
     "static/media/roboto-greek-ext-700-normal.woff": "/tierpension/static/media/roboto-greek-ext-700-normal.249853776d22a271b2b5.woff",
     "index.html": "/tierpension/index.html",
     "main.a5385832.css.map": "/tierpension/static/css/main.a5385832.css.map",
-    "main.0183d19b.js.map": "/tierpension/static/js/main.0183d19b.js.map"
+    "main.c34b2816.js.map": "/tierpension/static/js/main.c34b2816.js.map"
   },
   "entrypoints": [
     "static/css/main.a5385832.css",
-    "static/js/main.0183d19b.js"
+    "static/js/main.c34b2816.js"
   ]
 }
