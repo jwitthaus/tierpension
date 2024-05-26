@@ -19,17 +19,11 @@ const BookingsToolBar = () => {
     setNewBookingOpen(false);
   };
 
-  const handlePageChange = () => {
-    navigate("Calendar");
-  };
-
   return (
     <>
       <Box className={styles.container}>
         <Box className={styles.quickfilter}>
-          <MyButton onClick={handlePageChange} type="secondary">
-            Calendar
-          </MyButton>
+          <MyButton type="secondary">Switch Animal</MyButton>
           <MyButton type="secondary">Switch period</MyButton>
         </Box>
         <Box className={styles.desktopButton}>
