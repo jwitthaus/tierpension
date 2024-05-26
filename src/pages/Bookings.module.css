@@ -49,3 +49,9 @@
 .footer {
   height: 200px;
 }
+
+@media (max-width: 720px) {
+  .charts {
+    display: none;
+  }
+}

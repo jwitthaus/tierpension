@@ -1,12 +1,12 @@
 import React from "react";
 import styles from "./Bookings.module.css";
-import BookingsToolbar from "./BookingsToolBar";
-import Timeline from "./Timeline/Timeline";
-import Capacity from "./Capacity/Capacity";
-import CustomerList from "./CustomerList/CustomerList";
+import BookingsToolbar from "../components/Bookings/BookingsToolBar";
+import Timeline from "../components/Bookings/Timeline/Timeline";
+import CustomerList from "../components/Bookings/CustomerList/CustomerList";
 
-import { Box } from "@mui/material";
-import BarchartNegative from "./Capacity/BarcharNegative";
+import { Box, Container, Toolbar } from "@mui/material";
+import BarchartNegative from "../components/Bookings/Capacity/BarcharNegative";
+import BookingListItem from "../components/BasicControls/BookingListItem";
 
 const Bookings = () => {
   return (
@@ -28,13 +28,14 @@ const Bookings = () => {
     </Box>*/
     <Box className={styles.container}>
       <BookingsToolbar className={styles.header} />
+      <BookingListItem />
       <Box className={styles.main}>
         <CustomerList className={styles.nav} />
         <Box className={styles.charts}>
           <BarchartNegative className={styles.footer} />
-          <container className={styles.scalefix}>
+          <Container className={styles.scalefix}>
             <Timeline className={styles.timeline} />
-          </container>
+          </Container>
         </Box>
       </Box>
     </Box>

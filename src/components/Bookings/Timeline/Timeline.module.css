@@ -1,0 +1,7 @@
+.apexcharts-tooltip-title {
+  font-family: "Bootstrap-icons" !important;
+}
+
+.apexcharts-xaxis-label {
+  pointer-events: none;
+}

@@ -66,7 +66,7 @@ const Timeline = () => {
             fillColor: "#ffffff",
           },
           {
-            x: "4",
+            x: "Das ist irgendein langer Name der aus dem Block läuft",
             y: [
               new Date("2019-03-01").getTime(),
               new Date("2019-03-03").getTime(),
@@ -187,6 +187,11 @@ const Timeline = () => {
           distributed: true,
           dataLabels: {
             hideOverflowingLabels: false,
+            position: "bottom",
+          },
+          stroke: {
+            width: 1,
+            colors: ["#000000"],
           },
         },
       },

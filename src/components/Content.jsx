@@ -1,5 +1,5 @@
 import React from "react";
-import Bookings from "./Bookings/Bookings";
+import Bookings from "../pages/Bookings";
 
 const Content = () => {
   return <Bookings height="100%" />;

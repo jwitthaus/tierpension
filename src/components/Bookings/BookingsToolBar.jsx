@@ -1,12 +1,14 @@
 import React from "react";
 import styles from "./BookingsToolBar.module.css";
-import AddIcon from "@mui/icons-material/Add";
-import Grid from "@mui/material/Unstable_Grid2";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import NewBookingDialog from "./New Booking/NewBookingDialog";
 import MyButton from "../BasicControls/MyButton";
+import { Box, IconButton } from "@mui/material";
+import Add from "@mui/icons-material/Add";
+import { useNavigate } from "react-router-dom";
 
 const BookingsToolBar = () => {
+  const navigate = useNavigate();
   const [newBookingOpen, setNewBookingOpen] = React.useState(false);
 
   const handleNewBooking = () => {
@@ -17,36 +19,39 @@ const BookingsToolBar = () => {
     setNewBookingOpen(false);
   };
 
+  const handlePageChange = () => {
+    navigate("Calendar");
+  };
+
   return (
-    <div className={styles.toolbar}>
-      <Grid container spacing={2} sx={{ justifyContent: "space-between" }}>
-        <Grid container spacing={2}>
-          <Grid>
-            <MyButton type="secondary">Switch animal</MyButton>
-          </Grid>
-          <Grid>
-            <MyButton type="secondary">Switch period</MyButton>
-          </Grid>
-        </Grid>
-        <Grid container spacing={2}>
-          <Grid>
-            <MyButton type="secondary" icon={<FilterListIcon />}>
-              Filter
-            </MyButton>
-          </Grid>
-          <Grid>
-            <MyButton
-              type="primary"
-              icon={<AddIcon />}
-              onClick={handleNewBooking}
-            >
-              New Booking
-            </MyButton>
-          </Grid>
-        </Grid>
-      </Grid>
+    <>
+      <Box className={styles.container}>
+        <Box className={styles.quickfilter}>
+          <MyButton onClick={handlePageChange} type="secondary">
+            Calendar
+          </MyButton>
+          <MyButton type="secondary">Switch period</MyButton>
+        </Box>
+        <Box className={styles.desktopButton}>
+          <MyButton type="secondary" icon={<FilterListIcon />}>
+            Filter
+          </MyButton>
+          <MyButton type="primary" icon={<Add />} onClick={handleNewBooking}>
+            New Booking
+          </MyButton>
+        </Box>
+        <Box className={styles.mobileButton}>
+          <IconButton aria-label="filter">
+            <FilterListIcon />
+          </IconButton>
+          <IconButton aria-label="new booking">
+            <Add />
+          </IconButton>
+        </Box>
+      </Box>
+
       <NewBookingDialog visible={newBookingOpen} callbackClose={handleClose} />
-    </div>
+    </>
   );
 };
 

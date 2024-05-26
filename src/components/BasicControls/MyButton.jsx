@@ -12,19 +12,20 @@ const customTheme = createTheme({
           color: "darkslategray",
         },
         primary: {
-          color: "#000000",
-          backgroundColor: "#C9FA76",
+          color: "#ffffff",
+          backgroundColor: "#243380",
           boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.15)",
           "&:hover": {
-            backgroundColor: "#C1EF72",
+            backgroundColor: "#4B5DBB",
           },
         },
         secondary: {
-          color: "#000000",
-          backgroundColor: "white",
-          borderColor: "#D4D6CF",
+          color: "#243380",
+          backgroundColor: "#ffffff",
+          borderColor: "#243380",
           "&:hover": {
-            borderColor: "#D4D6CF",
+            borderColor: "#243380",
+            backgroundColor: "#EBF6FF",
           },
         },
       },
