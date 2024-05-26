@@ -1,7 +1,7 @@
 import * as React from "react";
 import Toolbar from "@mui/material/Toolbar";
 import Navbar from "./components/navbar/Navbar";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
 import Bookings from "./pages/Bookings";
 import Calendar from "./pages/Calendar";
 import Billing from "./pages/Billing";
@@ -10,7 +10,7 @@ import ErrorPage from "./pages/ErrorPage";
 export default function App(props) {
   return (
     <>
-      <BrowserRouter>
+      <HashRouter>
         <Navbar />
         <Toolbar />
         <Routes>
@@ -20,7 +20,7 @@ export default function App(props) {
           <Route path="/billing" element={<Billing />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </>
   );
 }
