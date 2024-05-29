@@ -1,13 +1,17 @@
 import FilterListIcon from "@mui/icons-material/FilterList";
-import { Box, IconButton, Stack } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
 import React from "react";
-import MyButton from "../../BasicControls/MyButton";
 import Searchbar from "../Searchbar";
 import styles from "./BookingsToolBar.module.css";
 import FilterPanel from "./FilterPanel";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 
-const BookingsToolBar = () => {
+const BookingsToolBar = ({ callbackChangeDays }) => {
   const [filterOpen, setFilterOpen] = React.useState(false);
+
+  const handleSevenDays = () => {
+    callbackChangeDays();
+  };
 
   const handleFilterOpen = () => {
     setFilterOpen(true);
@@ -22,25 +26,31 @@ const BookingsToolBar = () => {
       <Box className={styles.desktopFilterButtons}>
         <div>
           <IconButton
+            sx={{
+              position: "relative",
+              fontSize: "14px",
+              fontWeight: "bold",
+              alignItems: "center",
+            }}
             aria-label="filter"
-            onClick={handleFilterOpen}
+            onClick={() => callbackChangeDays(7)}
             className={styles.mobileFilterButton}
           >
-            <FilterListIcon />
+            <CalendarTodayIcon sx={{ position: "absolute" }} />7
           </IconButton>
           <IconButton
+            sx={{
+              position: "relative",
+              fontSize: "14px",
+              fontWeight: "bold",
+              alignItems: "center",
+            }}
             aria-label="filter"
-            onClick={handleFilterOpen}
+            onClick={() => callbackChangeDays(30)}
             className={styles.mobileFilterButton}
           >
-            <FilterListIcon />
-          </IconButton>
-          <IconButton
-            aria-label="filter"
-            onClick={handleFilterOpen}
-            className={styles.mobileFilterButton}
-          >
-            <FilterListIcon />
+            <CalendarTodayIcon sx={{ position: "absolute" }} />
+            30
           </IconButton>
         </div>
 

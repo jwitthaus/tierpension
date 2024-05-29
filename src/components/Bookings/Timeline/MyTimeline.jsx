@@ -25,7 +25,7 @@ const Item = styled(Paper)(({ theme }) => ({
   borderRadius: "8px",
 }));
 
-export default function MyTimeline() {
+export default function MyTimeline(timelineDays) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (event) => {
@@ -47,6 +47,10 @@ export default function MyTimeline() {
   const today = new Date(); //to be used for marking of taday column
   const timelineStart = today; //to be configurable from config file
   const endOfTimeline = addDays(today, timelineLength);
+  //% muss verwendet werden, um den zoom Faktoranzuzeigen (100% = ContainerBreite)
+  //also 30 Tage auf 100% ist eine Monatsansicht und einem Monat an Daten.
+  //Wenn man Buchungen für 2 Monate hat und man will aber nur einen Monat sehen, dann verwendet man 60 Tage bei 200%
+  const zoom = (timelineLength / timelineDays.timelineDays) * 100 + "%";
   const [data, setData] = useState([
     {
       //Niklas fragen, ob das bei ihm 15 ode 16 Tage sind? --> es sind zwar 16 Tage aber 15 Übernachtungen
@@ -84,21 +88,14 @@ export default function MyTimeline() {
     },
   ]);
 
-  const dates = [
-    new Date(2024, 6, 2),
-    new Date(2024, 6, 8),
-    new Date(2024, 7, 18),
-  ];
-
   return (
-    //cqw muss verwendet werden, um den zoom Faktoranzuzeigen (100cqw = ContainerBreite)
-    //also 30 Tage auf 100cqw ist eine Monatsansicht und einem Monat an Daten.
-    //Wenn man Buchungen für 2 Monate hat und man will aber nur einen Monat sehen, dann verwendet man 60 Tage bei 200cqw
-
     //Für die Erzeugung des Grids ist es wichtig ein leeres grid vor den Balken zu legen,
     //dann ein grid für den Balken selbst
     //und wieder ein leeres grid für den kompletten Bereich hinter dem Balken bis zum Ende des charts. Nur so ist sicher gestellt, dass eine keine ungewollten Umbrüche gibt
-    <Box sx={{ flexGrow: 1, width: "200cqw" }} className={styles.container}>
+    <Box
+      sx={{ flexGrow: 1, width: zoom, transition: "width 0.5s" }}
+      className={styles.container}
+    >
       <div className={styles.dayColumns}>
         {new Array(timelineLength).fill(0).map((_, index) => (
           <DayCircle index={index} key={index} className={styles.day}>
@@ -172,7 +169,8 @@ export default function MyTimeline() {
           vertical: "bottom",
           horizontal: "center",
         }}
-        transformOrigin={{ vertical: -4 }}
+        disableScrollLock={true}
+        transformOrigin={{ horizontal: 0, vertical: -4 }}
       >
         <Typography sx={{ p: 2 }}>The content of the Popover.</Typography>
       </Popover>

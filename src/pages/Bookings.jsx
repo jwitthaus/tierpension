@@ -1,5 +1,5 @@
-import React, { useRef } from "react";
-import Capacity from "../components/Bookings/Capacity/Capacity copy";
+import React, { useRef, useState } from "react";
+import Capacity from "../components/Bookings/Capacity/Capacity";
 import CustomerList from "../components/Bookings/CustomerList/CustomerList";
 import styles from "./Bookings.module.css";
 import MyTimeline from "../components/Bookings/Timeline/MyTimeline";
@@ -7,6 +7,11 @@ import BookingsToolBar from "../components/Bookings/Toolbar/BookingsToolBar";
 import { Toolbar } from "@mui/material";
 
 const Bookings = () => {
+  const [timelineDays, setTimelineDays] = useState(7);
+  const handleChangeTimelineDays = (days) => {
+    setTimelineDays(days);
+  };
+
   const capacityRef = useRef(null);
   const timelineRef = useRef(null);
 
@@ -22,14 +27,14 @@ const Bookings = () => {
       <div className={styles.bookings}>
         <div className={styles.toparea}>
           <div className={styles.toolbar}>
-            <BookingsToolBar />
+            <BookingsToolBar callbackChangeDays={handleChangeTimelineDays} />
           </div>
           <div
             ref={capacityRef}
             className={styles.capacity}
             onScroll={handleScrollCapacity}
           >
-            <MyTimeline />
+            <Capacity timelineDays={timelineDays} />
           </div>
         </div>
         <div className={styles.bottomarea}>
@@ -41,7 +46,7 @@ const Bookings = () => {
             className={styles.timeline}
             onScroll={handleScrollTimeline}
           >
-            <MyTimeline />
+            <MyTimeline timelineDays={timelineDays} />
           </div>
         </div>
       </div>
