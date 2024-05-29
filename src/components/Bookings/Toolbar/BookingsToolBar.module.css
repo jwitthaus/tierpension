@@ -1,0 +1,27 @@
+.desktopFilterButtons {
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  margin-left: 16px;
+  margin-right: 16px;
+  margin-bottom: 8px;
+}
+
+.searchbarAndMobileFilter {
+  display: flex;
+}
+
+.mobileFilterButton {
+  display: none;
+}
+
+.toolbar {
+  background-color: white;
+  padding-bottom: 8px;
+}
+
+@media (max-width: 800px) {
+  .quickfilter {
+    display: none;
+  }
+}

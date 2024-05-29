@@ -1,7 +1,5 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import ReactApexChart from "react-apexcharts";
-import moment from "moment";
 
 const BarchartNegative = () => {
   const [state, setState] = useState({

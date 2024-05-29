@@ -1,7 +1,9 @@
 import * as React from "react";
+
+import Add from "@mui/icons-material/Add";
+import MenuIcon from "@mui/icons-material/Menu";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
-import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
@@ -9,9 +11,10 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
-import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import MyButton from "../BasicControls/MyButton";
+import NewBookingDialog from "../Bookings/Toolbar/NewBookingDialog";
 import NavTabs from "./NavTabs";
 import styles from "./Navbar.module.css";
 
@@ -19,6 +22,16 @@ const drawerWidth = 240;
 const navItems = ["Bookings", "Calendar", "Billing"];
 
 function Navbar(props) {
+  const [newBookingOpen, setNewBookingOpen] = React.useState(false);
+
+  const handleNewBooking = () => {
+    setNewBookingOpen(true);
+  };
+
+  const handleBookingClose = () => {
+    setNewBookingOpen(false);
+  };
+
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -48,8 +61,7 @@ function Navbar(props) {
     window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
+    <Box>
       <AppBar component="nav">
         <Toolbar>
           <IconButton
@@ -71,7 +83,18 @@ function Navbar(props) {
             >
               Pet Hotel Manager
             </Typography>
-            <NavTabs className={styles.anyother} />
+            <NavTabs className={styles.tabs} />
+            <MyButton
+              className={styles.desktopbtn}
+              type="oncontrast"
+              icon={<Add />}
+              onClick={handleNewBooking}
+            >
+              New Booking
+            </MyButton>
+            <IconButton className={styles.mobilebtn} aria-label="new booking">
+              <Add />
+            </IconButton>
           </Box>
         </Toolbar>
       </AppBar>
@@ -84,17 +107,14 @@ function Navbar(props) {
           ModalProps={{
             keepMounted: true, // Better open performance on mobile.
           }}
-          sx={{
-            display: { xs: "block", sm: "none" },
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
-              width: drawerWidth,
-            },
-          }}
         >
           {drawer}
         </Drawer>
       </nav>
+      <NewBookingDialog
+        visible={newBookingOpen}
+        callbackClose={handleBookingClose}
+      />
     </Box>
   );
 }

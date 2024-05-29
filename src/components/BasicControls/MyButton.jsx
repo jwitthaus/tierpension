@@ -28,6 +28,15 @@ const customTheme = createTheme({
             backgroundColor: "#EBF6FF",
           },
         },
+        oncontrast: {
+          color: "#243380",
+          backgroundColor: "#FCE2A6",
+          borderColor: "#243380",
+          "&:hover": {
+            borderColor: "#243380",
+            backgroundColor: "#EBF6FF",
+          },
+        },
       },
     },
   },
@@ -43,6 +52,7 @@ const Button = styled(MuiButton, {
     styles.root,
     props.type === "primary" && styles.primary,
     props.type === "secondary" && styles.secondary,
+    props.type === "oncontrast" && styles.oncontrast,
   ],
 })(({ theme }) => ({
   backgroundColor: "aliceblue",
@@ -51,12 +61,7 @@ const Button = styled(MuiButton, {
   padding: "16px",
 }));
 
-export default function MyButtonSimpleOverride({
-  type,
-  children,
-  onClick,
-  icon,
-}) {
+export default function MyButton({ type, children, onClick, icon }) {
   return (
     <ThemeProvider theme={customTheme}>
       <Button
@@ -64,7 +69,7 @@ export default function MyButtonSimpleOverride({
         startIcon={icon}
         type={type}
         variant={
-          type === "primary"
+          type === "primary" || type === "oncontrast"
             ? "contained"
             : type === "secondary"
             ? "outlined"

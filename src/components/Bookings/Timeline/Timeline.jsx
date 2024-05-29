@@ -1,8 +1,6 @@
-import React from "react";
-import { useState } from "react";
-import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
-import ReactApexChart from "react-apexcharts";
 import moment from "moment";
+import React, { useState } from "react";
+import ReactApexChart from "react-apexcharts";
 
 const Timeline = () => {
   const [state, setState] = useState({
