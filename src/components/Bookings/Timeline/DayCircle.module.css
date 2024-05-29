@@ -4,6 +4,7 @@
   border-right: solid;
   border-width: 1px;
   border-color: white;
+  text-align: center;
 }
 .odd {
   width: 100%;
@@ -11,4 +12,5 @@
   border-right: solid;
   border-width: 1px;
   border-color: white;
+  text-align: center;
 }

@@ -9,10 +9,16 @@ export default function Capacity(timelineDays) {
   //also 30 Tage auf 100% ist eine Monatsansicht und einem Monat an Daten.
   //Wenn man Buchungen für 2 Monate hat und man will aber nur einen Monat sehen, dann verwendet man 60 Tage bei 200%
   const zoom = (timelineLength / timelineDays.timelineDays) * 100 + "%";
+  const [colors, setcolorBookings] = React.useState([
+    "#f4f4f4",
+    "#87EA32",
+    "#FE5019",
+  ]);
   return (
     <Box sx={{ width: zoom }} className={styles.capacity}>
       <BarChart
         margin={{ top: 0, left: 0, right: 0, bottom: 0 }}
+        colors={colors}
         series={[
           {
             data: [
