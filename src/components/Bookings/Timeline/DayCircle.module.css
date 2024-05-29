@@ -1,0 +1,14 @@
+.even {
+  width: 100%;
+  height: 100%;
+  border-right: solid;
+  border-width: 1px;
+  border-color: white;
+}
+.odd {
+  width: 100%;
+  height: 100%;
+  border-right: solid;
+  border-width: 1px;
+  border-color: white;
+}

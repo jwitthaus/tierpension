@@ -25,15 +25,19 @@
 .bottomarea {
   width: 100%;
   display: flex;
-  margin-top: 100px;
+  margin-top: 108px;
 }
 
 .customerList {
   width: 299px;
+  padding-top: 10px;
 }
 
 .timeline {
   flex: 1;
+
+  padding-top: 10px;
   width: inherit;
   overflow-x: scroll;
+  background-color: #f4f4f4;
 }

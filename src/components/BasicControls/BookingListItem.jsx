@@ -44,9 +44,9 @@ export default function BookingListItem({
           }}
         >
           {animal === "cat" ? (
-            <Cat width="20px" />
+            <Cat width="24px" />
           ) : animal === "dog" ? (
-            <Dog width="20px" />
+            <Dog width="24px" />
           ) : null}
           {medication && <MedicationIcon />}
           {intolerance && <NoMealsIcon />}

@@ -27,7 +27,7 @@ export default function CustomerList() {
         {[0, 1, 2, 3, 4].map((sectionId) => (
           <li key={`section-${sectionId}`}>
             <ul>
-              <ListSubheader>{`I'm sticky ${sectionId}`}</ListSubheader>
+              <ListSubheader>{`KW ${sectionId + 1} / 2024`}</ListSubheader>
               {[0, 1, 2].map((item) => (
                 <BookingListItem
                   key={`item-${sectionId}-${item}`}
