@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/tierpension/static/css/main.a5385832.css",
-    "main.js": "/tierpension/static/js/main.c34b2816.js",
+    "main.css": "/tierpension/static/css/main.76ee3a37.css",
+    "main.js": "/tierpension/static/js/main.ec292864.js",
     "static/media/roboto-latin-500-normal.woff2": "/tierpension/static/media/roboto-latin-500-normal.f25d774ecfe0996f8eb5.woff2",
     "static/media/roboto-latin-700-normal.woff2": "/tierpension/static/media/roboto-latin-700-normal.227c93190fe7f82de3f8.woff2",
     "static/media/roboto-latin-400-normal.woff2": "/tierpension/static/media/roboto-latin-400-normal.b009a76ad6afe4ebd301.woff2",
@@ -38,6 +38,7 @@
     "static/media/roboto-greek-400-normal.woff2": "/tierpension/static/media/roboto-greek-400-normal.c35e4c3958e209d17b31.woff2",
     "static/media/roboto-greek-500-normal.woff2": "/tierpension/static/media/roboto-greek-500-normal.9ac81fefbe6c319ea40b.woff2",
     "static/media/roboto-greek-700-normal.woff2": "/tierpension/static/media/roboto-greek-700-normal.50e795c1345353b0e996.woff2",
+    "static/media/noun-cat-6828443.svg": "/tierpension/static/media/noun-cat-6828443.a7a0d0a867a3216698b86650a6896577.svg",
     "static/media/roboto-greek-300-normal.woff": "/tierpension/static/media/roboto-greek-300-normal.8ecd7085cfe9bc2c22ac.woff",
     "static/media/roboto-greek-400-normal.woff": "/tierpension/static/media/roboto-greek-400-normal.dfdff8fa12eac629d29f.woff",
     "static/media/roboto-greek-500-normal.woff": "/tierpension/static/media/roboto-greek-500-normal.1a05a4887ccb810cb4dd.woff",
@@ -58,12 +59,13 @@
     "static/media/roboto-greek-ext-300-normal.woff": "/tierpension/static/media/roboto-greek-ext-300-normal.392a45a84c081c4b412d.woff",
     "static/media/roboto-greek-ext-400-normal.woff": "/tierpension/static/media/roboto-greek-ext-400-normal.f708607d2a7290fb8bfa.woff",
     "static/media/roboto-greek-ext-700-normal.woff": "/tierpension/static/media/roboto-greek-ext-700-normal.249853776d22a271b2b5.woff",
+    "static/media/noun-dog-6815406.svg": "/tierpension/static/media/noun-dog-6815406.fabd28cbb1d7bcc1d9240467a49b9e61.svg",
     "index.html": "/tierpension/index.html",
-    "main.a5385832.css.map": "/tierpension/static/css/main.a5385832.css.map",
-    "main.c34b2816.js.map": "/tierpension/static/js/main.c34b2816.js.map"
+    "main.76ee3a37.css.map": "/tierpension/static/css/main.76ee3a37.css.map",
+    "main.ec292864.js.map": "/tierpension/static/js/main.ec292864.js.map"
   },
   "entrypoints": [
-    "static/css/main.a5385832.css",
-    "static/js/main.c34b2816.js"
+    "static/css/main.76ee3a37.css",
+    "static/js/main.ec292864.js"
   ]
 }
