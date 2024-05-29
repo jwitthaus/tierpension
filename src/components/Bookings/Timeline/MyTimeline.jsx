@@ -43,9 +43,10 @@ export default function MyTimeline() {
   //Tage errechnen sich aus Tag der Rückgabe der spätesten Buchung - heutiges Datum (in Tagen)
   //--> vorausgesetzt man kann nicht in die Vergangenheit scrollen
   //diese Zahl wird dann als Spaltenzahl verwendet
-  const days = 30;
-  const today = new Date();
-  const endOfTimeline = addDays(today, days);
+  const timelineLength = 30; //to be calculated from end of latest booking
+  const today = new Date(); //to be used for marking of taday column
+  const timelineStart = today; //to be configurable from config file
+  const endOfTimeline = addDays(today, timelineLength);
   const [data, setData] = useState([
     {
       //Niklas fragen, ob das bei ihm 15 ode 16 Tage sind? --> es sind zwar 16 Tage aber 15 Übernachtungen
@@ -99,13 +100,18 @@ export default function MyTimeline() {
     //und wieder ein leeres grid für den kompletten Bereich hinter dem Balken bis zum Ende des charts. Nur so ist sicher gestellt, dass eine keine ungewollten Umbrüche gibt
     <Box sx={{ flexGrow: 1, width: "200cqw" }} className={styles.container}>
       <div className={styles.dayColumns}>
-        {new Array(days).fill(0).map((_, index) => (
+        {new Array(timelineLength).fill(0).map((_, index) => (
           <DayCircle index={index} key={index} className={styles.day}>
             {format(addDays(new Date(), index), "d")}
           </DayCircle>
         ))}
       </div>
-      <Grid container rowSpacing={1} columns={days} className={styles.gantt}>
+      <Grid
+        container
+        rowSpacing={1}
+        columns={timelineLength}
+        className={styles.gantt}
+      >
         {data.map((d, i) => (
           <React.Fragment key={i}>
             <Grid

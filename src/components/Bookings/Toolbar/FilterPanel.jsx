@@ -54,7 +54,7 @@ const FilterPanel = ({ visible, callbackClose }) => {
     <React.Fragment>
       <Drawer
         sx={{ p: 2 }}
-        anchor="right"
+        anchor="left"
         open={visible}
         onClose={callbackClose}
       >

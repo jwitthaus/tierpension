@@ -17,11 +17,14 @@ import MyButton from "../BasicControls/MyButton";
 import NewBookingDialog from "../Bookings/Toolbar/NewBookingDialog";
 import NavTabs from "./NavTabs";
 import styles from "./Navbar.module.css";
+import { useNavigate } from "react-router-dom";
 
 const drawerWidth = 240;
 const navItems = ["Bookings", "Calendar", "Billing"];
 
 function Navbar(props) {
+  const navigate = useNavigate();
+
   const [newBookingOpen, setNewBookingOpen] = React.useState(false);
 
   const handleNewBooking = () => {
@@ -48,7 +51,10 @@ function Navbar(props) {
       <List>
         {navItems.map((item) => (
           <ListItem key={item} disablePadding>
-            <ListItemButton sx={{ textAlign: "center" }}>
+            <ListItemButton
+              onClick={(event) => navigate(item)}
+              sx={{ textAlign: "center" }}
+            >
               <ListItemText primary={item} />
             </ListItemButton>
           </ListItem>
