@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/tierpension/static/css/main.76ee3a37.css",
-    "main.js": "/tierpension/static/js/main.b0330066.js",
+    "main.css": "/tierpension/static/css/main.334bcb9a.css",
+    "main.js": "/tierpension/static/js/main.690301a5.js",
     "static/media/roboto-latin-500-normal.woff2": "/tierpension/static/media/roboto-latin-500-normal.f25d774ecfe0996f8eb5.woff2",
     "static/media/roboto-latin-700-normal.woff2": "/tierpension/static/media/roboto-latin-700-normal.227c93190fe7f82de3f8.woff2",
     "static/media/roboto-latin-400-normal.woff2": "/tierpension/static/media/roboto-latin-400-normal.b009a76ad6afe4ebd301.woff2",
@@ -61,11 +61,11 @@
     "static/media/roboto-greek-ext-700-normal.woff": "/tierpension/static/media/roboto-greek-ext-700-normal.249853776d22a271b2b5.woff",
     "static/media/noun-dog-6815406.svg": "/tierpension/static/media/noun-dog-6815406.fabd28cbb1d7bcc1d9240467a49b9e61.svg",
     "index.html": "/tierpension/index.html",
-    "main.76ee3a37.css.map": "/tierpension/static/css/main.76ee3a37.css.map",
-    "main.b0330066.js.map": "/tierpension/static/js/main.b0330066.js.map"
+    "main.334bcb9a.css.map": "/tierpension/static/css/main.334bcb9a.css.map",
+    "main.690301a5.js.map": "/tierpension/static/js/main.690301a5.js.map"
   },
   "entrypoints": [
-    "static/css/main.76ee3a37.css",
-    "static/js/main.b0330066.js"
+    "static/css/main.334bcb9a.css",
+    "static/js/main.690301a5.js"
   ]
 }
