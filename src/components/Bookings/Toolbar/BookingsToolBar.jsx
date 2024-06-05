@@ -1,7 +1,7 @@
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { Box, IconButton } from "@mui/material";
 import React from "react";
-import Searchbar from "../Searchbar";
+import Searchbar from "./Searchbar";
 import styles from "./BookingsToolBar.module.css";
 import FilterPanel from "./FilterPanel";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";

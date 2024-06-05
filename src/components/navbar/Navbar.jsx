@@ -14,7 +14,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import MyButton from "../BasicControls/MyButton";
-import NewBookingDialog from "../Bookings/Toolbar/NewBookingDialog";
+import NewBookingDialog from "./NewBooking/NewBookingDialog";
 import NavTabs from "./NavTabs";
 import styles from "./Navbar.module.css";
 import { useNavigate } from "react-router-dom";

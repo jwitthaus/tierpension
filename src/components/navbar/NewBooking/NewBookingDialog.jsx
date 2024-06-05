@@ -5,11 +5,16 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Button, TextField } from "@mui/material";
+import { Box, Button, TextField } from "@mui/material";
 import CustomerSearch from "./CustomerSearch";
-
 import { useState } from "react";
 import axios from "axios";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import Capacity from "../../Bookings/Capacity/Capacity";
+import "dayjs/locale/de";
 
 const NewBookingDialog = ({ visible, callbackClose }) => {
   const randomIdInRange = (min, max) => {
@@ -30,6 +35,8 @@ const NewBookingDialog = ({ visible, callbackClose }) => {
 
   const handleClose = () => {
     setNewCustomer(false);
+    setStartDate(null);
+    setEndDate(null);
     callbackClose();
   };
 
@@ -59,6 +66,14 @@ const NewBookingDialog = ({ visible, callbackClose }) => {
       console.log(error);
     }
   };
+
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+
+  function periodSet() {
+    return startDate && endDate;
+  }
+
   /*
   const handleSubmit = (data) => {
     if (newCustomer) {
@@ -96,7 +111,7 @@ const NewBookingDialog = ({ visible, callbackClose }) => {
     <Fragment>
       <Dialog
         open={visible}
-        onClose={callbackClose}
+        onClose={handleClose}
         PaperProps={{
           component: "form",
           onSubmit: (event) => {
@@ -109,46 +124,84 @@ const NewBookingDialog = ({ visible, callbackClose }) => {
       >
         <DialogTitle>New Booking</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            To create a new booking, please enter your name.
-          </DialogContentText>
-          {!newCustomer ? (
-            <CustomerSearch
-              handleNewCustomerSelected={showNewCustomer}
-              handleCustomerSelected={handleCustomerSelected}
-            />
-          ) : (
-            <Fragment>
-              <TextField
-                autoFocus
-                margin="dense"
-                id="vorname"
-                name="vorname"
-                label="Vorname"
-                type="text"
-                onChange={handleChange}
-                variant="standard"
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {!newCustomer ? (
+              <CustomerSearch
+                required
+                handleNewCustomerSelected={showNewCustomer}
+                handleCustomerSelected={handleCustomerSelected}
               />
-              <TextField
-                margin="dense"
-                id="nachname"
-                name="nachname"
-                label="Nachname"
-                type="text"
-                onChange={handleChange}
-                variant="standard"
-              />
-              <TextField
-                margin="dense"
-                id="email"
-                name="email"
-                label="Email"
-                type="text"
-                onChange={handleChange}
-                variant="standard"
-              />
-            </Fragment>
-          )}
+            ) : (
+              <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+                <TextField
+                  required
+                  sx={{ flex: 1, minWidth: "150px" }}
+                  autoFocus
+                  margin="dense"
+                  id="vorname"
+                  name="vorname"
+                  label="First name"
+                  type="text"
+                  onChange={handleChange}
+                  variant="standard"
+                />
+                <TextField
+                  required
+                  sx={{ flex: 1, minWidth: "150px" }}
+                  margin="dense"
+                  id="nachname"
+                  name="nachname"
+                  label="Last name"
+                  type="text"
+                  onChange={handleChange}
+                  variant="standard"
+                />
+                <TextField
+                  required
+                  sx={{ flex: 1, minWidth: "150px" }}
+                  margin="dense"
+                  id="email"
+                  name="email"
+                  label="Email"
+                  type="text"
+                  onChange={handleChange}
+                  variant="standard"
+                />
+              </Box>
+            )}
+            <Box>
+              <LocalizationProvider
+                dateAdapter={AdapterDayjs}
+                adapterLocale="de"
+              >
+                <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+                  <DatePicker
+                    required
+                    id="startDate"
+                    name="startDate"
+                    disablePast
+                    maxDate={endDate}
+                    sx={{ flex: 1, minWidth: "150px" }}
+                    label="Start day"
+                    onChange={(newValue) => setStartDate(newValue)}
+                  />
+                  <DatePicker
+                    required
+                    id="endDate"
+                    name="endDate"
+                    disablePast
+                    minDate={startDate}
+                    sx={{ flex: 1, minWidth: "150px" }}
+                    label="End day"
+                    onChange={(newValue) => setEndDate(newValue)}
+                  />
+                </Box>
+              </LocalizationProvider>
+            </Box>
+            {periodSet() ? (
+              <Capacity timelineStart={startDate} timelineEnd={endDate} />
+            ) : null}
+          </Box>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>

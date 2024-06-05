@@ -23,6 +23,7 @@ export default function Timeline(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (event) => {
+    console.log(event.currentTarget.xs);
     setAnchorEl(event.currentTarget);
   };
 
@@ -91,6 +92,7 @@ export default function Timeline(props) {
                 <Grid
                   item
                   height="48px"
+                  onClick={props.scrollToDateCallback}
                   xs={
                     // +1 da selbst wenn der Buchungstag = timelineStart ist (Differenz = 0), dann soll ja trotzdem ein Balken von einem Tag angezeigt werden
                     differenceInCalendarDays(
@@ -107,7 +109,7 @@ export default function Timeline(props) {
                         ) + 1
                   }
                 >
-                  <Item elevation={2} onClick={handleClick}>
+                  <Item elevation={2} onClick={handleClick} key={booking.id}>
                     {
                       //als label verwende ich die originale Länge der Buchung, auch wenn ein Teil bereits in der Vergangenheit liegt
                       //--> mit Niklas klären

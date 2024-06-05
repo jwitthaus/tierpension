@@ -1,6 +1,6 @@
 import * as React from "react";
 import Toolbar from "@mui/material/Toolbar";
-import Navbar from "./components/navbar/Navbar";
+import Navbar from "./components/Navbar/Navbar";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Bookings from "./pages/Bookings";
 import CalendarPage from "./pages/CalendarPage";

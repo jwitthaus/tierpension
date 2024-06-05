@@ -23,7 +23,7 @@ export default function BookingListItem({
 }) {
   return (
     <ListItem disablePadding>
-      <ListItemButton sx={{ display: "flex" }}>
+      <ListItemButton sx={{ display: "flex" }} onClick={onClick}>
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <ListItemText primary={label} />
           {newItem && (

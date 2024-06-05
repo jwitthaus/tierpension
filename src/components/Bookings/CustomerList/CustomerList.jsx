@@ -2,10 +2,7 @@ import { Box, ListSubheader } from "@mui/material";
 import List from "@mui/material/List";
 import React from "react";
 import BookingListItem from "../../BasicControls/BookingListItem";
-import Searchbar from "../Searchbar";
-import BookingsToolBar from "../Toolbar/BookingsToolBar";
 import styles from "./CustomerList.module.css";
-import moment from "moment";
 
 export default function CustomerList(props) {
   /*useEffect(() => {
@@ -37,6 +34,7 @@ export default function CustomerList(props) {
                   medication="true"
                   intolerance="true"
                   label={`${booking.lastName}, ${booking.firstName}`}
+                  onClick={() => props.scrollToDateCallback(booking.dayStart)}
                 />
               ))}
             </ul>
