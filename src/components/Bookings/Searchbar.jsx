@@ -21,8 +21,8 @@ const Searchbar = () => {
   };
 
   return (
-    <div id="app">
-      <FormControl sx={{ mx: 2 }}>
+    <>
+      <FormControl sx={{ width: "100%" }}>
         <TextField
           value={value}
           size="small"
@@ -48,7 +48,7 @@ const Searchbar = () => {
           }}
         />
       </FormControl>
-    </div>
+    </>
   );
 };
 

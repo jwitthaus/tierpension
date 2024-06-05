@@ -14,6 +14,7 @@
 }
 
 .toolbar {
+  width: 299px;
 }
 
 .capacity {
@@ -30,7 +31,7 @@
 
 .customerList {
   width: 299px;
-  padding-top: 10px;
+  padding-top: 30px;
 }
 
 .timeline {
@@ -40,4 +41,20 @@
   width: inherit;
   overflow-x: scroll;
   background-color: #f4f4f4;
+}
+
+@media (max-width: 800px) {
+  .capacity {
+    display: none;
+  }
+  .timeline {
+    display: none;
+  }
+  .customerList {
+    width: 100%;
+    padding-top: 10px;
+  }
+  .toolbar {
+    width: 100%;
+  }
 }

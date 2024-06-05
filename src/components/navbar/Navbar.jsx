@@ -18,6 +18,7 @@ import NewBookingDialog from "../Bookings/Toolbar/NewBookingDialog";
 import NavTabs from "./NavTabs";
 import styles from "./Navbar.module.css";
 import { useNavigate } from "react-router-dom";
+import { Button, CssBaseline } from "@mui/material";
 
 const drawerWidth = 240;
 const navItems = ["Bookings", "Calendar", "Billing"];
@@ -44,7 +45,7 @@ function Navbar(props) {
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
-      <Typography variant="h6" sx={{ my: 1.5 }}>
+      <Typography variant="h6" sx={{ my: 1.5, mx: 2.5 }}>
         Pet Hotel Manager
       </Typography>
       <Divider />
@@ -67,43 +68,51 @@ function Navbar(props) {
     window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <Box>
-      <AppBar component="nav">
-        <Toolbar>
+    <Box sx={{ display: "flex" }}>
+      <AppBar component="nav" sx={{ width: "100%" }}>
+        <Toolbar
+          sx={{ width: "100%", display: "flex", justifyItems: "space-between" }}
+        >
           <IconButton
+            color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: "none" }, color: "white" }}
+            sx={{ mr: 2, display: { sm: "none" } }}
           >
             <MenuIcon />
           </IconButton>
-          <Box sx={{ display: { xs: "none", sm: "flex" }, flex: 1 }}>
-            <Typography
-              variant="h6"
-              component="div"
-              sx={{
-                color: "white",
-                alignContent: "center",
-              }}
-            >
-              Pet Hotel Manager
-            </Typography>
-            <NavTabs className={styles.tabs} />
-            <MyButton
-              className={styles.desktopbtn}
-              type="oncontrast"
-              icon={<Add />}
-              onClick={handleNewBooking}
-            >
-              New Booking
-            </MyButton>
-            <IconButton className={styles.mobilebtn} aria-label="new booking">
-              <Add />
-            </IconButton>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ display: { xs: "none", sm: "block" } }}
+          >
+            Pet Hotel Manager
+          </Typography>
+          <Box
+            sx={{
+              flex: 1,
+              display: { xs: "none", sm: "block" },
+            }}
+          >
+            <NavTabs />
           </Box>
+
+          <Button
+            sx={{
+              backgroundColor: "#fce2a6",
+              borderRadius: "12px",
+              width: "150px",
+            }}
+            type="oncontrast"
+            startIcon={<Add />}
+            onClick={handleNewBooking}
+          >
+            New Booking
+          </Button>
         </Toolbar>
       </AppBar>
+
       <nav>
         <Drawer
           container={container}

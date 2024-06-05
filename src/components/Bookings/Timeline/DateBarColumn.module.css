@@ -1,0 +1,39 @@
+.weekend {
+  width: 100%;
+  height: 100%;
+  border-right: solid;
+  border-width: 1px;
+  border-color: white;
+  text-align: center;
+  background-color: #d7e6f3;
+  font-size: small;
+  font-weight: 500;
+  align-content: center;
+  color: #aaaaaa;
+}
+.workday {
+  width: 100%;
+  height: 100%;
+  border-right: solid;
+  border-width: 1px;
+  border-color: white;
+  text-align: center;
+  font-size: small;
+  font-weight: 500;
+  align-content: center;
+  color: #aaaaaa;
+}
+
+.today {
+  width: 100%;
+  height: 100%;
+  border-right: solid;
+  border-width: 1px;
+  border-color: white;
+  text-align: center;
+  background-color: #243380;
+  font-size: small;
+  font-weight: 500;
+  align-content: center;
+  color: white;
+}

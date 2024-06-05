@@ -23,7 +23,7 @@ const BookingsToolBar = ({ callbackChangeDays }) => {
 
   return (
     <div className={styles.toolbar}>
-      <Box className={styles.desktopFilterButtons}>
+      <Box className={styles.filterButtons}>
         <div>
           <IconButton
             sx={{
@@ -34,7 +34,6 @@ const BookingsToolBar = ({ callbackChangeDays }) => {
             }}
             aria-label="filter"
             onClick={() => callbackChangeDays(7)}
-            className={styles.mobileFilterButton}
           >
             <CalendarTodayIcon sx={{ position: "absolute" }} />7
           </IconButton>
@@ -47,25 +46,17 @@ const BookingsToolBar = ({ callbackChangeDays }) => {
             }}
             aria-label="filter"
             onClick={() => callbackChangeDays(30)}
-            className={styles.mobileFilterButton}
           >
             <CalendarTodayIcon sx={{ position: "absolute" }} />
             30
           </IconButton>
         </div>
 
-        <IconButton
-          aria-label="filter"
-          onClick={handleFilterOpen}
-          className={styles.mobileFilterButton}
-        >
+        <IconButton aria-label="filter" onClick={handleFilterOpen}>
           <FilterListIcon />
         </IconButton>
       </Box>
-
-      <Box className={styles.searchbarAndMobileFilter}>
-        <Searchbar />
-      </Box>
+      <Searchbar />
 
       <FilterPanel visible={filterOpen} callbackClose={handleFilterClose} />
     </div>

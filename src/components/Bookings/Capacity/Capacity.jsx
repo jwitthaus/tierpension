@@ -2,13 +2,17 @@ import React from "react";
 import styles from "./Capacity.module.css";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { Box } from "@mui/material";
+import { differenceInCalendarDays } from "date-fns";
 
-export default function Capacity(timelineDays) {
-  const timelineLength = 30; //to be calculated from end of latest booking
+export default function Capacity(props) {
+  const timelineLength = differenceInCalendarDays(
+    props.timelineEnd,
+    props.timelineStart
+  );
   //% muss verwendet werden, um den zoom Faktoranzuzeigen (100% = ContainerBreite)
   //also 30 Tage auf 100% ist eine Monatsansicht und einem Monat an Daten.
   //Wenn man Buchungen für 2 Monate hat und man will aber nur einen Monat sehen, dann verwendet man 60 Tage bei 200%
-  const zoom = (timelineLength / timelineDays.timelineDays) * 100 + "%";
+  const zoom = (timelineLength / props.visibleDays) * 100 + "%";
   const [colors, setcolorBookings] = React.useState([
     "#f4f4f4",
     "#87EA32",

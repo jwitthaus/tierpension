@@ -1,21 +1,4 @@
-.tabs {
-  flex: 1;
-}
-
-.mobilebtn {
-  display: none;
-}
-
-.desktopbtn {
-  display: block;
-  height: 40px;
-}
-
-@media (max-width: 800px) {
-  .desktopbtn {
-    display: none;
-  }
-  .mobilebtn {
-    display: block;
-  }
+.container {
+  display: flex;
+  justify-content: stretch;
 }

@@ -5,8 +5,9 @@ import BookingListItem from "../../BasicControls/BookingListItem";
 import Searchbar from "../Searchbar";
 import BookingsToolBar from "../Toolbar/BookingsToolBar";
 import styles from "./CustomerList.module.css";
+import moment from "moment";
 
-export default function CustomerList() {
+export default function CustomerList(props) {
   /*useEffect(() => {
     fetch("http://localhost:8081/customers")
       .then((res) => res.json())
@@ -24,18 +25,18 @@ export default function CustomerList() {
         }}
         subheader={<li />}
       >
-        {[0, 1, 2, 3, 4].map((sectionId) => (
-          <li key={`section-${sectionId}`}>
+        {props.data.map((sectionId) => (
+          <li key={sectionId.title}>
             <ul>
-              <ListSubheader>{`KW ${sectionId + 1} / 2024`}</ListSubheader>
-              {[0, 1, 2].map((item) => (
+              <ListSubheader>{sectionId.title}</ListSubheader>
+              {sectionId.bookings.map((booking) => (
                 <BookingListItem
-                  key={`item-${sectionId}-${item}`}
+                  key={`${sectionId.title}-${booking.dayStart}`}
                   newItem="true"
                   animal="cat"
                   medication="true"
                   intolerance="true"
-                  label="Witthaus, Jörg"
+                  label={`${booking.lastName}, ${booking.firstName}`}
                 />
               ))}
             </ul>

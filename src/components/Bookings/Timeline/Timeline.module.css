@@ -1,7 +1,19 @@
-.apexcharts-tooltip-title {
-  font-family: "Bootstrap-icons" !important;
+.dayColumns {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: space-around;
+  position: absolute;
+  overflow-x: hidden;
 }
 
-.apexcharts-xaxis-label {
-  pointer-events: none;
+.gantt {
+  position: absolute;
+  padding-top: 20px;
+}
+
+.container {
+  position: relative;
+  height: 100%;
+  overflow-y: hidden;
 }
