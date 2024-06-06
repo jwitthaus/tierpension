@@ -25,7 +25,16 @@ export default function CustomerList(props) {
         {props.data.map((sectionId) => (
           <li key={sectionId.title}>
             <ul>
-              <ListSubheader>{sectionId.title}</ListSubheader>
+              <ListSubheader
+                sx={{
+                  color: "#bbbbbb",
+                  fontSize: "small",
+                  height: "30px",
+                  lineHeight: "30px",
+                }}
+              >
+                {sectionId.title}
+              </ListSubheader>
               {sectionId.bookings.map((booking) => (
                 <BookingListItem
                   key={`${sectionId.title}-${booking.dayStart}`}

@@ -1,5 +1,5 @@
 import FilterListIcon from "@mui/icons-material/FilterList";
-import { Box, IconButton } from "@mui/material";
+import { Box, IconButton, Typography } from "@mui/material";
 import React from "react";
 import Searchbar from "./Searchbar";
 import styles from "./BookingsToolBar.module.css";
@@ -24,33 +24,50 @@ const BookingsToolBar = ({ callbackChangeDays }) => {
   return (
     <div className={styles.toolbar}>
       <Box className={styles.filterButtons}>
-        <div>
+        <Box>
           <IconButton
             sx={{
               position: "relative",
               fontSize: "14px",
               fontWeight: "bold",
-              alignItems: "center",
             }}
             aria-label="filter"
             onClick={() => callbackChangeDays(7)}
           >
-            <CalendarTodayIcon sx={{ position: "absolute" }} />7
+            <CalendarTodayIcon />
+            <Typography
+              sx={{
+                position: "absolute",
+                fontSize: "x-small",
+                fontWeight: "700",
+                paddingTop: "4px",
+              }}
+            >
+              7
+            </Typography>
           </IconButton>
           <IconButton
             sx={{
               position: "relative",
               fontSize: "14px",
               fontWeight: "bold",
-              alignItems: "center",
             }}
             aria-label="filter"
-            onClick={() => callbackChangeDays(30)}
+            onClick={() => callbackChangeDays(31)}
           >
-            <CalendarTodayIcon sx={{ position: "absolute" }} />
-            30
+            <CalendarTodayIcon />
+            <Typography
+              sx={{
+                position: "absolute",
+                fontSize: "x-small",
+                fontWeight: "700",
+                paddingTop: "4px",
+              }}
+            >
+              31
+            </Typography>
           </IconButton>
-        </div>
+        </Box>
 
         <IconButton aria-label="filter" onClick={handleFilterOpen}>
           <FilterListIcon />

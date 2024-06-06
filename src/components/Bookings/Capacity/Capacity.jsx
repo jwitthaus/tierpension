@@ -1,10 +1,43 @@
 import React from "react";
 import styles from "./Capacity.module.css";
 import { BarChart } from "@mui/x-charts/BarChart";
-import { Box } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 import { differenceInCalendarDays } from "date-fns";
+import { ResponsiveChartContainer } from "@mui/x-charts";
+import { addDays, format } from "date-fns";
+import { red } from "@mui/material/colors";
+
+const CustomItemTooltipContent = (props) => {
+  const { itemData, series } = props;
+  console.log(series);
+  return (
+    <Paper sx={{ padding: 3, backgroundColor: series.color }}>
+      <p>{series.label}</p>
+      <p>{series.data[itemData.dataIndex]}</p>
+    </Paper>
+  );
+};
 
 export default function Capacity(props) {
+  const capacity = [6, 6, 6, 6, 6, 6];
+  const bookings = [5, 6, 7, 8, 4, 3];
+  /*const capacity = [
+    ...Array(differenceInCalendarDays(props.timelineEnd, props.timelineStart)),
+  ].map((d, i) => 6);
+
+  const bookings = [
+    ...Array(differenceInCalendarDays(props.timelineEnd, props.timelineStart)),
+  ].map((d, i) => Math.floor(Math.random() * (8 - 3 + 1)) + 3);*/
+
+  const greyBar = [
+    ...capacity.map((d, i) => (d < bookings[i] ? d : bookings[i])),
+  ];
+  const greenBar = [...capacity.map((d, i) => Math.max(0, d - bookings[i]))];
+  const redBar = [...capacity.map((d, i) => Math.max(0, bookings[i] - d))];
+  /*console.log("grey: " + greyBar);
+  console.log("red: " + redBar);
+  console.log("green: " + greenBar);*/
+
   const timelineLength = differenceInCalendarDays(
     props.timelineEnd,
     props.timelineStart
@@ -23,28 +56,35 @@ export default function Capacity(props) {
       <BarChart
         margin={{ top: 0, left: 0, right: 0, bottom: 0 }}
         colors={colors}
+        //tooltip={{ trigger: "item", itemContent: CustomItemTooltipContent }}
+        tooltip={{ trigger: "item" }}
+        xAxis={[
+          {
+            data: [
+              ...Array(
+                differenceInCalendarDays(props.timelineEnd, props.timelineStart)
+              ),
+            ].map((d, i) =>
+              format(addDays(props.timelineStart, i), "d. MMMM yy")
+            ),
+            scaleType: "band",
+          },
+        ]}
         series={[
           {
-            data: [
-              3, 6, 6, 4, 5, 3, 6, 6, 4, 5, 3, 6, 6, 4, 5, 3, 6, 6, 4, 5, 3, 6,
-              6, 4, 5, 3, 6, 6, 4, 4,
-            ],
+            data: greyBar,
             stack: "A",
-            label: "Booked",
+            label: "Overall Booked",
+            valueFormatter: (element, { dataIndex }) =>
+              `${element + redBar[dataIndex]}`,
           },
           {
-            data: [
-              3, 0, 0, 2, 1, 3, 0, 0, 2, 1, 3, 0, 0, 2, 1, 3, 0, 0, 2, 1, 3, 0,
-              0, 2, 1, 3, 0, 0, 2, 2,
-            ],
+            data: greenBar,
             stack: "A",
             label: "Free Capacity",
           },
           {
-            data: [
-              0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1,
-              1, 0, 0, 0, 1, 1, 0, 0,
-            ],
+            data: redBar,
             stack: "A",
             label: "Overbooked",
           },
@@ -52,6 +92,9 @@ export default function Capacity(props) {
         leftAxis={null}
         bottomAxis={null}
         slotProps={{ legend: { hidden: true } }}
+        slots={{
+          itemContent: CustomItemTooltipContent,
+        }}
       />
     </Box>
   );

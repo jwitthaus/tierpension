@@ -5,14 +5,15 @@ import Timeline from "../components/Bookings/Timeline/Timeline";
 import BookingsToolBar from "../components/Bookings/Toolbar/BookingsToolBar";
 import styles from "./Bookings.module.css";
 import DateBar from "../components/Bookings/Timeline/DateBar";
-import { addDays, differenceInCalendarDays, format } from "date-fns";
+import { addDays, differenceInCalendarDays, format, subDays } from "date-fns";
+import { useDraggable } from "react-use-draggable-scroll";
 
 export default function Bookings() {
   const [bookings, setBookings] = useState([
     {
       //Niklas fragen, ob das bei ihm 15 ode 16 Tage sind? --> es sind zwar 16 Tage aber 15 Übernachtungen
       //Der Balken fängt am 2. an, aber wann soll er aufhören? Inklusive 8.?
-      dayStart: new Date(2024, 5, 3),
+      dayStart: new Date(2024, 4, 23),
       dayEnd: new Date(2024, 5, 4),
       firstName: "Holger",
       lastName: "Witthaus",
@@ -77,9 +78,10 @@ export default function Bookings() {
   //wir sollten auf den kalkulierten letzten Tag aus der DB noch 30 Tage drauf rechnen, damit wir bei Click in der CustomerListe auch IMMER den ersten Tag in der linkesten Spalte haben
   //ansonsten kann es sein, wenn die letzte Buchung nur zwei Tage hat, dass sie ganz rechts am Rand hängt und nicht automatisch nach links scrollt
   const emptyOffsetAtTimelineEnd = 30;
-  const timelineLength = 30 + emptyOffsetAtTimelineEnd;
+  const offsetBeforeToday = 14;
+  const timelineLength = 64 + emptyOffsetAtTimelineEnd + offsetBeforeToday;
   const today = new Date();
-  const timelineStart = today; //to be configurable from config file or database
+  const timelineStart = subDays(today, offsetBeforeToday); //to be configurable from config file or database
   const timelineEnd = addDays(timelineStart, timelineLength);
 
   const groupBookings = () => {
@@ -113,15 +115,61 @@ export default function Bookings() {
 
   const [visibleDays, setVisibleDays] = useState(7);
   const handleChangeVisibleDays = (days) => {
+    //hier die aktuelle scrollPosition merken und umrechnen auf den neuen zoom
+    //dann aus scrollLeft anwenden
+    timelineRef.current.scrollLeft = (7 * timelineRef.current.scrollLeft) / 31;
+    console.log(timelineRef.current.scrollLeft);
     setVisibleDays(days);
   };
 
   const capacityRef = useRef(null);
   const timelineRef = useRef(null);
 
+  const { events } = useDraggable(timelineRef);
+
   const handleScrollTimeline = (scroll) => {
     capacityRef.current.scrollLeft = scroll.target.scrollLeft;
   };
+
+  /*const handleMouseDownTimeline = React.useCallback((e) => {
+    const ele = timelineRef.current;
+    if (!ele) {
+      return;
+    }
+    const startPos = {
+      left: ele.scrollLeft,
+      top: ele.scrollTop,
+      x: e.clientX,
+      y: e.clientY,
+    };
+
+    const handleMouseMove = (e) => {
+      const dx = e.clientX - startPos.x;
+      const dy = e.clientY - startPos.y;
+      ele.scrollTop = startPos.top - dy;
+      ele.scrollLeft = startPos.left - dx;
+      updateCursor(ele);
+    };
+
+    const handleMouseUp = () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+      resetCursor(ele);
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  }, []);
+
+  const updateCursor = (ele) => {
+    ele.style.cursor = "grabbing";
+    ele.style.userSelect = "none";
+  };
+
+  const resetCursor = (ele) => {
+    ele.style.cursor = "grab";
+    ele.style.removeProperty("user-select");
+  };*/
 
   function scrollToDateCallback(date) {
     let difference = differenceInCalendarDays(date, timelineStart);
@@ -160,9 +208,11 @@ export default function Bookings() {
             />
           </div>
           <div
+            {...events}
             ref={timelineRef}
             className={styles.timeline}
             onScroll={handleScrollTimeline}
+            //onMouseDown={handleMouseDownTimeline}
           >
             <Timeline
               visibleDays={visibleDays}

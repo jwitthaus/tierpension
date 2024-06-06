@@ -65,7 +65,7 @@ export default function Timeline(props) {
           <React.Fragment key={i}>
             <Grid
               item
-              height="48px"
+              height="30px"
               xs={differenceInCalendarDays(
                 props.timelineEnd,
                 props.timelineStart
