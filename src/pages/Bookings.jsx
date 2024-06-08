@@ -135,13 +135,13 @@ export default function Bookings() {
     //hier die aktuelle scrollPosition merken und umrechnen auf den neuen zoom
     //dann aus scrollLeft anwenden
     //timelineRef.current.scrollLeft = (7 * timelineRef.current.scrollLeft) / 31;
-    /*const relativeScrollPosition =
+    const relativeScrollPosition =
       visibleDays === 31
         ? (7 * timelineRef.current.scrollLeft) / 31
         : (31 * timelineRef.current.scrollLeft) / 7;
     animate(timelineRef.current.scrollLeft, relativeScrollPosition, {
       onUpdate: (latest) => (timelineRef.current.scrollLeft = latest),
-    });*/
+    });
     setVisibleWidth(timelineRef.current.offsetWidth);
   }, [visibleDays]);
 

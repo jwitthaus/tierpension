@@ -26,7 +26,6 @@ const Item = styled(Paper)(({ theme }) => ({
 export default function Timeline(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  //const [zoom, setZoom = 50;
   const { viewDays, viewWidth } = useContext(Context);
   const [visibleDays, setVisibleDays] = viewDays;
   const [visibleWidth, setVisibleWidth] = viewWidth;
@@ -34,17 +33,12 @@ export default function Timeline(props) {
 
   //visibleDays changed
   useEffect(() => {
-    //console.log("Hallo " + timelineViewData);
-    animate(
-      timelineRef.current.offsetWidth,
-      (timelineLength / visibleDays) * 100,
-      {
-        onUpdate: (latest) => {
-          timelineRef.current.style.width = `${latest}%`;
-          //console.log(latest);
-        },
-      }
-    );
+    const value = (visibleWidth * timelineLength) / visibleDays;
+    animate(timelineRef.current.offsetWidth, value, {
+      onUpdate: (latest) => {
+        timelineRef.current.style.width = `${latest}px`;
+      },
+    });
   }, [visibleDays]);
 
   const handleClick = (event) => {
@@ -78,8 +72,6 @@ export default function Timeline(props) {
       ref={timelineRef}
       sx={{
         flexGrow: 1,
-        //transition: "width 0.5s",
-        //transitionTimingFunction: "ease",
       }}
       className={styles.container}
     >

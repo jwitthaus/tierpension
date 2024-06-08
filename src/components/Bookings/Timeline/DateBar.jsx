@@ -1,10 +1,14 @@
 import React from "react";
 
-import styles from "./Timeline.module.css";
-import DateBarColumn from "./DateBarColumn";
-import { addDays, differenceInCalendarDays, format } from "date-fns";
 import { Box } from "@mui/material";
-import { motion } from "framer-motion";
+import { addDays, differenceInCalendarDays } from "date-fns";
+import DateBarColumn from "./DateBarColumn";
+import styles from "./Timeline.module.css";
+import { useRef } from "react";
+import { useContext } from "react";
+import { Context } from "../../../pages/Bookings";
+import { animate } from "framer-motion";
+import { useEffect } from "react";
 
 export default function DateBar(props) {
   const timelineLength = differenceInCalendarDays(
@@ -12,17 +16,27 @@ export default function DateBar(props) {
     props.timelineStart
   );
 
-  const AnimatedBox = motion(Box);
+  const { viewDays, viewWidth } = useContext(Context);
+  const [visibleDays, setVisibleDays] = viewDays;
+  const [visibleWidth, setVisibleWidth] = viewWidth;
+  const dateRef = useRef(null);
 
-  const zoom = (timelineLength / props.visibleDays) * 100 + "%";
+  //visibleDays changed
+  useEffect(() => {
+    const value = (visibleWidth * timelineLength) / visibleDays;
+    animate(dateRef.current.offsetWidth, value, {
+      onUpdate: (latest) => {
+        dateRef.current.style.width = `${latest}px`;
+      },
+    });
+  }, [visibleDays]);
   return (
-    <AnimatedBox
+    <Box
+      ref={dateRef}
       sx={{
         flexGrow: 1,
         backgroundColor: "#e4e4e4",
       }}
-      transition={{ ease: "easeInOut", duration: 0.5 }}
-      animate={{ width: zoom }}
       className={styles.container}
       height={25}
     >
@@ -34,6 +48,6 @@ export default function DateBar(props) {
           ></DateBarColumn>
         ))}
       </div>
-    </AnimatedBox>
+    </Box>
   );
 }
