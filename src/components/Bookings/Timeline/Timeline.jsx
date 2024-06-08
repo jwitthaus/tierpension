@@ -4,11 +4,15 @@ import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import { addDays, differenceInCalendarDays } from "date-fns";
 import * as React from "react";
-
+import { animate, motion } from "framer-motion";
 import { Popover, Typography } from "@mui/material";
 import { useState } from "react";
 import BackgroundColumn from "./BackgroundColumn";
 import styles from "./Timeline.module.css";
+import { Context } from "../../../pages/Bookings";
+import { useEffect } from "react";
+import { useContext } from "react";
+import { useRef } from "react";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -22,8 +26,28 @@ const Item = styled(Paper)(({ theme }) => ({
 export default function Timeline(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
+  //const [zoom, setZoom = 50;
+  const { viewDays, viewWidth } = useContext(Context);
+  const [visibleDays, setVisibleDays] = viewDays;
+  const [visibleWidth, setVisibleWidth] = viewWidth;
+  const timelineRef = useRef(null);
+
+  //visibleDays changed
+  useEffect(() => {
+    //console.log("Hallo " + timelineViewData);
+    animate(
+      timelineRef.current.offsetWidth,
+      (timelineLength / visibleDays) * 100,
+      {
+        onUpdate: (latest) => {
+          timelineRef.current.style.width = `${latest}%`;
+          //console.log(latest);
+        },
+      }
+    );
+  }, [visibleDays]);
+
   const handleClick = (event) => {
-    console.log(event.currentTarget.xs);
     setAnchorEl(event.currentTarget);
   };
 
@@ -41,15 +65,22 @@ export default function Timeline(props) {
   //% muss verwendet werden, um den zoom Faktoranzuzeigen (100% = ContainerBreite)
   //also 30 Tage auf 100% ist eine Monatsansicht und einem Monat an Daten.
   //Wenn man Buchungen für 2 Monate hat und man will aber nur einen Monat sehen, dann verwendet man 60 Tage bei 200%
-  const zoom = (timelineLength / props.visibleDays) * 100 + "%";
+  //const zoom = (timelineLength / props.visibleDays) * 100;
   const [data, setData] = useState(props.data);
+
+  const AnimatedBox = motion(Box);
 
   return (
     //Für die Erzeugung des Grids ist es wichtig ein leeres grid vor den Balken zu legen,
     //dann ein grid für den Balken selbst
     //und wieder ein leeres grid für den kompletten Bereich hinter dem Balken bis zum Ende des charts. Nur so ist sicher gestellt, dass eine keine ungewollten Umbrüche gibt
     <Box
-      sx={{ flexGrow: 1, width: zoom, transition: "width 0.5s" }}
+      ref={timelineRef}
+      sx={{
+        flexGrow: 1,
+        //transition: "width 0.5s",
+        //transitionTimingFunction: "ease",
+      }}
       className={styles.container}
     >
       <div className={styles.dayColumns}>
@@ -92,7 +123,6 @@ export default function Timeline(props) {
                 <Grid
                   item
                   height="48px"
-                  onClick={props.scrollToDateCallback}
                   xs={
                     // +1 da selbst wenn der Buchungstag = timelineStart ist (Differenz = 0), dann soll ja trotzdem ein Balken von einem Tag angezeigt werden
                     differenceInCalendarDays(

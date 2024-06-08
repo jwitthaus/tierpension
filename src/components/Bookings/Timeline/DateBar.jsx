@@ -4,21 +4,25 @@ import styles from "./Timeline.module.css";
 import DateBarColumn from "./DateBarColumn";
 import { addDays, differenceInCalendarDays, format } from "date-fns";
 import { Box } from "@mui/material";
+import { motion } from "framer-motion";
 
 export default function DateBar(props) {
   const timelineLength = differenceInCalendarDays(
     props.timelineEnd,
     props.timelineStart
   );
+
+  const AnimatedBox = motion(Box);
+
   const zoom = (timelineLength / props.visibleDays) * 100 + "%";
   return (
-    <Box
+    <AnimatedBox
       sx={{
         flexGrow: 1,
-        width: zoom,
-        transition: "width 0.5s",
         backgroundColor: "#e4e4e4",
       }}
+      transition={{ ease: "easeInOut", duration: 0.5 }}
+      animate={{ width: zoom }}
       className={styles.container}
       height={25}
     >
@@ -30,6 +34,6 @@ export default function DateBar(props) {
           ></DateBarColumn>
         ))}
       </div>
-    </Box>
+    </AnimatedBox>
   );
 }

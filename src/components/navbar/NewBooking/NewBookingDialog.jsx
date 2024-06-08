@@ -1,20 +1,18 @@
 import React, { Fragment } from "react";
 
+import { Box, Button, TextField } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Box, Button, TextField } from "@mui/material";
-import CustomerSearch from "./CustomerSearch";
-import { useState } from "react";
-import axios from "axios";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import Capacity from "../../Bookings/Capacity/Capacity";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import axios from "axios";
 import "dayjs/locale/de";
+import { useState } from "react";
+import Capacity from "../../Bookings/Capacity/Capacity";
+import CustomerSearch from "./CustomerSearch";
 
 const NewBookingDialog = ({ visible, callbackClose }) => {
   const randomIdInRange = (min, max) => {

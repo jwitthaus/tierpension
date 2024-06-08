@@ -1,7 +1,8 @@
-import * as React from "react";
+import React, { useCallback } from "react";
 
 import Add from "@mui/icons-material/Add";
 import MenuIcon from "@mui/icons-material/Menu";
+import { Button } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
@@ -13,12 +14,9 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import MyButton from "../BasicControls/MyButton";
-import NewBookingDialog from "./NewBooking/NewBookingDialog";
-import NavTabs from "./NavTabs";
-import styles from "./Navbar.module.css";
 import { useNavigate } from "react-router-dom";
-import { Button, CssBaseline } from "@mui/material";
+import NavTabs from "./NavTabs";
+import NewBookingDialog from "./NewBooking/NewBookingDialog";
 
 const drawerWidth = 240;
 const navItems = ["Bookings", "Calendar", "Billing"];
@@ -32,9 +30,9 @@ function Navbar(props) {
     setNewBookingOpen(true);
   };
 
-  const handleBookingClose = () => {
+  const handleBookingClose = useCallback(() => {
     setNewBookingOpen(false);
-  };
+  }, []);
 
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);

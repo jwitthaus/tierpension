@@ -36,7 +36,6 @@
 
 .timeline {
   flex: 1;
-  scroll-behavior: smooth;
 
   width: inherit;
   overflow-x: scroll;

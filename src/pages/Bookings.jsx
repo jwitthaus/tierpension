@@ -1,4 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import Capacity from "../components/Bookings/Capacity/Capacity";
 import CustomerList from "../components/Bookings/CustomerList/CustomerList";
 import Timeline from "../components/Bookings/Timeline/Timeline";
@@ -6,7 +12,10 @@ import BookingsToolBar from "../components/Bookings/Toolbar/BookingsToolBar";
 import styles from "./Bookings.module.css";
 import DateBar from "../components/Bookings/Timeline/DateBar";
 import { addDays, differenceInCalendarDays, format, subDays } from "date-fns";
-import { useDraggable } from "react-use-draggable-scroll";
+
+import { animate, motion } from "framer-motion";
+
+export const Context = createContext();
 
 export default function Bookings() {
   const [bookings, setBookings] = useState([
@@ -113,117 +122,94 @@ export default function Bookings() {
   };
   const [groupedBookings, setGroupedBookings] = useState(groupBookings());
 
-  const [visibleDays, setVisibleDays] = useState(7);
-  const handleChangeVisibleDays = (days) => {
-    //hier die aktuelle scrollPosition merken und umrechnen auf den neuen zoom
-    //dann aus scrollLeft anwenden
-    timelineRef.current.scrollLeft = (7 * timelineRef.current.scrollLeft) / 31;
-    console.log(timelineRef.current.scrollLeft);
-    setVisibleDays(days);
-  };
-
   const capacityRef = useRef(null);
   const timelineRef = useRef(null);
 
-  const { events } = useDraggable(timelineRef);
+  const [visibleDays, setVisibleDays] = useState(7);
+  const [visibleWidth, setVisibleWidth] = useState(
+    timelineRef.current?.offsetWidth
+  );
+
+  //visible Days changed
+  useEffect(() => {
+    //hier die aktuelle scrollPosition merken und umrechnen auf den neuen zoom
+    //dann aus scrollLeft anwenden
+    //timelineRef.current.scrollLeft = (7 * timelineRef.current.scrollLeft) / 31;
+    /*const relativeScrollPosition =
+      visibleDays === 31
+        ? (7 * timelineRef.current.scrollLeft) / 31
+        : (31 * timelineRef.current.scrollLeft) / 7;
+    animate(timelineRef.current.scrollLeft, relativeScrollPosition, {
+      onUpdate: (latest) => (timelineRef.current.scrollLeft = latest),
+    });*/
+    setVisibleWidth(timelineRef.current.offsetWidth);
+  }, [visibleDays]);
 
   const handleScrollTimeline = (scroll) => {
     capacityRef.current.scrollLeft = scroll.target.scrollLeft;
   };
 
-  /*const handleMouseDownTimeline = React.useCallback((e) => {
-    const ele = timelineRef.current;
-    if (!ele) {
-      return;
-    }
-    const startPos = {
-      left: ele.scrollLeft,
-      top: ele.scrollTop,
-      x: e.clientX,
-      y: e.clientY,
-    };
-
-    const handleMouseMove = (e) => {
-      const dx = e.clientX - startPos.x;
-      const dy = e.clientY - startPos.y;
-      ele.scrollTop = startPos.top - dy;
-      ele.scrollLeft = startPos.left - dx;
-      updateCursor(ele);
-    };
-
-    const handleMouseUp = () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-      resetCursor(ele);
-    };
-
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-  }, []);
-
-  const updateCursor = (ele) => {
-    ele.style.cursor = "grabbing";
-    ele.style.userSelect = "none";
-  };
-
-  const resetCursor = (ele) => {
-    ele.style.cursor = "grab";
-    ele.style.removeProperty("user-select");
-  };*/
-
-  function scrollToDateCallback(date) {
+  const scrollToDateCallback = useCallback((date) => {
     let difference = differenceInCalendarDays(date, timelineStart);
     console.log(timelineRef.current?.offsetWidth);
     let scrollPosition =
       (difference * timelineRef.current?.offsetWidth) / visibleDays;
-    timelineRef.current.scrollLeft = scrollPosition;
-  }
+    animate(timelineRef.current.scrollLeft, scrollPosition, {
+      onUpdate: (latest) => (timelineRef.current.scrollLeft = latest),
+    });
+    //timelineRef.current.scrollLeft = scrollPosition;
+  }, []);
   return (
     <>
-      <div className={styles.bookings}>
-        <div className={styles.toparea}>
-          <div className={styles.toolbar}>
-            <BookingsToolBar callbackChangeDays={handleChangeVisibleDays} />
+      <Context.Provider
+        value={{
+          viewDays: [visibleDays, setVisibleDays],
+          viewWidth: [visibleWidth, setVisibleWidth],
+        }}
+      >
+        <div className={styles.bookings}>
+          <div className={styles.toparea}>
+            <div className={styles.toolbar}>
+              <BookingsToolBar />
+            </div>
+            <div ref={capacityRef} className={styles.capacity}>
+              <Capacity
+                visibleDays={visibleDays}
+                timelineStart={timelineStart}
+                timelineEnd={timelineEnd}
+                data={groupedBookings}
+              />
+              <DateBar
+                visibleDays={visibleDays}
+                timelineStart={timelineStart}
+                timelineEnd={timelineEnd}
+                data={groupedBookings}
+              />
+            </div>
           </div>
-          <div ref={capacityRef} className={styles.capacity}>
-            <Capacity
-              visibleDays={visibleDays}
-              timelineStart={timelineStart}
-              timelineEnd={timelineEnd}
-              data={groupedBookings}
-            />
-            <DateBar
-              visibleDays={visibleDays}
-              timelineStart={timelineStart}
-              timelineEnd={timelineEnd}
-              data={groupedBookings}
-            />
+          <div className={styles.bottomarea}>
+            <div className={styles.customerList}>
+              <CustomerList
+                data={groupedBookings}
+                scrollToDateCallback={scrollToDateCallback}
+              />
+            </div>
+            <div
+              ref={timelineRef}
+              className={styles.timeline}
+              onScroll={handleScrollTimeline}
+              //onMouseDown={handleMouseDownTimeline}
+            >
+              <Timeline
+                timelineStart={timelineStart}
+                timelineEnd={timelineEnd}
+                data={groupedBookings}
+                scrollToDateCallback={scrollToDateCallback}
+              />
+            </div>
           </div>
         </div>
-        <div className={styles.bottomarea}>
-          <div className={styles.customerList}>
-            <CustomerList
-              data={groupedBookings}
-              scrollToDateCallback={scrollToDateCallback}
-            />
-          </div>
-          <div
-            {...events}
-            ref={timelineRef}
-            className={styles.timeline}
-            onScroll={handleScrollTimeline}
-            //onMouseDown={handleMouseDownTimeline}
-          >
-            <Timeline
-              visibleDays={visibleDays}
-              timelineStart={timelineStart}
-              timelineEnd={timelineEnd}
-              data={groupedBookings}
-              scrollToDateCallback={scrollToDateCallback}
-            />
-          </div>
-        </div>
-      </div>
+      </Context.Provider>
     </>
   );
 }
