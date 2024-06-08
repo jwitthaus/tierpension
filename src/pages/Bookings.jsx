@@ -140,7 +140,10 @@ export default function Bookings() {
         ? (7 * timelineRef.current.scrollLeft) / 31
         : (31 * timelineRef.current.scrollLeft) / 7;
     animate(timelineRef.current.scrollLeft, relativeScrollPosition, {
-      onUpdate: (latest) => (timelineRef.current.scrollLeft = latest),
+      onUpdate: (latest) => {
+        timelineRef.current.scrollLeft = latest;
+        capacityRef.current.scrollLeft = latest;
+      },
     });
     setVisibleWidth(timelineRef.current.offsetWidth);
   }, [visibleDays]);
