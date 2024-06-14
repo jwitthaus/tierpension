@@ -16,26 +16,15 @@ export default function DateBar(props) {
     props.timelineStart
   );
 
-  const { viewDays, viewWidth } = useContext(Context);
-  const [visibleDays, setVisibleDays] = viewDays;
-  const [visibleWidth, setVisibleWidth] = viewWidth;
   const dateRef = useRef(null);
 
-  //visibleDays changed
-  useEffect(() => {
-    const value = (visibleWidth * timelineLength) / visibleDays;
-    animate(dateRef.current.offsetWidth, value, {
-      onUpdate: (latest) => {
-        dateRef.current.style.width = `${latest}px`;
-      },
-    });
-  }, [visibleDays]);
   return (
     <Box
       ref={dateRef}
       sx={{
         flexGrow: 1,
         backgroundColor: "#e4e4e4",
+        width: `${props.timelineScale}%`,
       }}
       className={styles.container}
       height={25}

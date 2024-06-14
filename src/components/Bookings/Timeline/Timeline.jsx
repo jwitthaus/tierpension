@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
-import { addDays, differenceInCalendarDays } from "date-fns";
+import { addDays, differenceInCalendarDays, format, parseISO } from "date-fns";
 import * as React from "react";
 import { animate, motion } from "framer-motion";
 import { Popover, Typography } from "@mui/material";
@@ -18,7 +18,8 @@ const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
   padding: theme.spacing(1),
-  textAlign: "center",
+  textAlign: "left",
+  paddingInlineStart: "16px",
   color: theme.palette.text.secondary,
   borderRadius: "8px",
 }));
@@ -26,20 +27,12 @@ const Item = styled(Paper)(({ theme }) => ({
 export default function Timeline(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  const { viewDays, viewWidth } = useContext(Context);
-  const [visibleDays, setVisibleDays] = viewDays;
-  const [visibleWidth, setVisibleWidth] = viewWidth;
-  const timelineRef = useRef(null);
+  const timelineLength = differenceInCalendarDays(
+    props.timelineEnd,
+    props.timelineStart
+  );
 
-  //visibleDays changed
-  useEffect(() => {
-    const value = (visibleWidth * timelineLength) / visibleDays;
-    animate(timelineRef.current.offsetWidth, value, {
-      onUpdate: (latest) => {
-        timelineRef.current.style.width = `${latest}px`;
-      },
-    });
-  }, [visibleDays]);
+  const timelineRef = useRef(null);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -52,16 +45,6 @@ export default function Timeline(props) {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
-  const timelineLength = differenceInCalendarDays(
-    props.timelineEnd,
-    props.timelineStart
-  );
-  //% muss verwendet werden, um den zoom Faktoranzuzeigen (100% = ContainerBreite)
-  //also 30 Tage auf 100% ist eine Monatsansicht und einem Monat an Daten.
-  //Wenn man Buchungen für 2 Monate hat und man will aber nur einen Monat sehen, dann verwendet man 60 Tage bei 200%
-  //const zoom = (timelineLength / props.visibleDays) * 100;
-  const [data, setData] = useState(props.data);
-
   const AnimatedBox = motion(Box);
 
   return (
@@ -72,6 +55,7 @@ export default function Timeline(props) {
       ref={timelineRef}
       sx={{
         flexGrow: 1,
+        width: `${props.timelineScale}%`,
       }}
       className={styles.container}
     >
@@ -84,7 +68,7 @@ export default function Timeline(props) {
         ))}
       </div>
       <Grid container columns={timelineLength} className={styles.gantt}>
-        {data.map((category, i) => (
+        {props.data.map((category, i) => (
           <React.Fragment key={i}>
             <Grid
               item
@@ -94,78 +78,84 @@ export default function Timeline(props) {
                 props.timelineStart
               )}
             ></Grid>
-            {category.bookings.map((booking, j) => (
-              <React.Fragment key={j}>
-                <Grid
-                  item
-                  height="48px"
-                  xs={
-                    //den doppelten Aufruf der Funktion vermeiden
-                    differenceInCalendarDays(
-                      booking.dayStart,
-                      props.timelineStart
-                    ) >= 0
-                      ? differenceInCalendarDays(
-                          booking.dayStart,
-                          props.timelineStart
-                        )
-                      : 0
-                  }
-                ></Grid>
-                <Grid
-                  item
-                  height="48px"
-                  xs={
-                    // +1 da selbst wenn der Buchungstag = timelineStart ist (Differenz = 0), dann soll ja trotzdem ein Balken von einem Tag angezeigt werden
-                    differenceInCalendarDays(
-                      booking.dayStart,
-                      props.timelineStart
-                    ) >= 0
-                      ? differenceInCalendarDays(
-                          booking.dayEnd,
-                          booking.dayStart
-                        ) + 1
-                      : differenceInCalendarDays(
-                          booking.dayEnd,
-                          props.timelineStart
-                        ) + 1
-                  }
-                >
-                  <Item elevation={2} onClick={handleClick} key={booking.id}>
-                    {
-                      //als label verwende ich die originale Länge der Buchung, auch wenn ein Teil bereits in der Vergangenheit liegt
-                      //--> mit Niklas klären
+            {category.bookings.map((booking, j) => {
+              //actual rows for bantt bars
+              const startDate = format(
+                parseISO(booking.Beginn_Datum),
+                "eeee do MMM, yyyy"
+              );
+              const endDate = format(
+                parseISO(booking.Ende_Datum),
+                "eeee do MMM, yyyy"
+              );
+              return (
+                <React.Fragment key={j}>
+                  <Grid
+                    item
+                    height="48px"
+                    xs={
+                      //den doppelten Aufruf der Funktion vermeiden
                       differenceInCalendarDays(
-                        booking.dayEnd,
-                        booking.dayStart
-                      ) + 1
-                      //der folgende code ist nur zu Testen um zu sehen, wiev lang der Block gezeichnet wird
-                      /*differenceInCalendarDays(data[i].dayStart, timelineStart) >= 0
-                      ? "booking " +
-                        (differenceInCalendarDays(
-                          data[i].dayEnd,
-                          data[i].dayStart
-                        ) +
-                          1)
-                      : "booking " +
-                        (differenceInCalendarDays(data[i].dayEnd, timelineStart) + 1)*/
+                        new Date(booking.Beginn_Datum),
+                        props.timelineStart
+                      ) >= 0
+                        ? differenceInCalendarDays(
+                            new Date(booking.Beginn_Datum),
+                            props.timelineStart
+                          )
+                        : 0
                     }
-                    days
-                  </Item>
-                </Grid>
-                <Grid
-                  item
-                  height="48px"
-                  xs={
-                    //-1 um den Tag von oben (+1) wieder auszugleichen
-                    differenceInCalendarDays(
-                      props.timelineEnd,
-                      booking.dayEnd
-                    ) - 1
-                  }
-                ></Grid>
-              </React.Fragment>
-            ))}
+                  ></Grid>
+                  <Grid
+                    item
+                    height="48px"
+                    xs={
+                      // +1 da selbst wenn der Buchungstag = timelineStart ist (Differenz = 0), dann soll ja trotzdem ein Balken von einem Tag angezeigt werden
+                      differenceInCalendarDays(
+                        new Date(booking.Beginn_Datum),
+                        props.timelineStart
+                      ) >= 0
+                        ? differenceInCalendarDays(
+                            new Date(booking.Ende_Datum),
+                            new Date(booking.Beginn_Datum)
+                          ) + 1
+                        : differenceInCalendarDays(
+                            new Date(booking.Ende_Datum),
+                            props.timelineStart
+                          ) + 1
+                    }
+                  >
+                    <Item
+                      elevation={2}
+                      onClick={handleClick}
+                      key={booking.id}
+                      sx={{ height: "36px", marginTop: "6px" }}
+                    >
+                      {
+                        //als label verwende ich die originale Länge der Buchung, auch wenn ein Teil bereits in der Vergangenheit liegt
+                        //--> mit Niklas klären
+                        differenceInCalendarDays(
+                          new Date(booking.Ende_Datum),
+                          new Date(booking.Beginn_Datum)
+                        ) + 1
+                      }
+                      days
+                    </Item>
+                  </Grid>
+                  <Grid
+                    item
+                    height="48px"
+                    xs={
+                      //-1 um den Tag von oben (+1) wieder auszugleichen
+                      differenceInCalendarDays(
+                        props.timelineEnd,
+                        new Date(booking.Ende_Datum)
+                      ) - 1
+                    }
+                  ></Grid>
+                </React.Fragment>
+              );
+            })}
           </React.Fragment>
         ))}
       </Grid>

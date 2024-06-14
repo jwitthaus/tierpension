@@ -9,9 +9,7 @@ import { Context } from "../../../pages/Bookings";
 
 const BookingsToolBar = () => {
   const [filterOpen, setFilterOpen] = React.useState(false);
-  const { viewDays, viewWidth } = useContext(Context);
-  const [visibleDays, setVisibleDays] = viewDays;
-  const [visibleWidth, setVisibleWidth] = viewWidth;
+  const [visibleDays, setVisibleDays] = useContext(Context);
 
   const handleFilterOpen = () => {
     setFilterOpen(true);

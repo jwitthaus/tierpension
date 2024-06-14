@@ -40,30 +40,19 @@ export default function Capacity(props) {
     props.timelineEnd,
     props.timelineStart
   );
-  //% muss verwendet werden, um den zoom Faktoranzuzeigen (100% = ContainerBreite)
-  //also 30 Tage auf 100% ist eine Monatsansicht und einem Monat an Daten.
-  //Wenn man Buchungen für 2 Monate hat und man will aber nur einen Monat sehen, dann verwendet man 60 Tage bei 200%
-  const { viewDays, viewWidth } = useContext(Context);
-  const [visibleDays, setVisibleDays] = viewDays;
-  const [visibleWidth, setVisibleWidth] = viewWidth;
   const capacityRef = useRef(null);
 
-  //visibleDays changed
-  useEffect(() => {
-    const value = (visibleWidth * timelineLength) / visibleDays;
-    animate(capacityRef.current.offsetWidth, value, {
-      onUpdate: (latest) => {
-        capacityRef.current.style.width = `${latest}px`;
-      },
-    });
-  }, [visibleDays]);
   const [colors, setcolorBookings] = React.useState([
     "#f4f4f4",
     "#87EA32",
     "#FE5019",
   ]);
   return (
-    <Box ref={capacityRef} className={styles.capacity}>
+    <Box
+      ref={capacityRef}
+      className={styles.capacity}
+      sx={{ width: `${props.timelineScale}%` }}
+    >
       <BarChart
         margin={{ top: 0, left: 0, right: 0, bottom: 0 }}
         colors={colors}

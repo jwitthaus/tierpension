@@ -55,18 +55,22 @@ const CustomerSearch = ({
           });
         }}
         getOptionLabel={(option) => {
-          return option.Vorname + " " + option.Nachname;
+          return option.Nachname + ", " + option.Vorname;
         }}
         renderOption={(props, option) => (
-          <ListItem {...props} key={option.id}>
+          <ListItem {...props} key={option.Nummer}>
             {newCustomerOptionSelected(option.Vorname) && (
               <AddIcon fontSize="small" sx={{ color: "#0000ff" }} />
             )}
 
             <ListItemText
               sx={{ color: colorOfNewCustomer(option.Vorname) }}
-              primary={option.Vorname + " " + option.Nachname}
-              secondary={option.Email}
+              primary={
+                option.Nachname +
+                `${option.Nachname ? ", " : ""}` + //get rid of the comma for the dirty hack of last element (add new customer)
+                option.Vorname
+              }
+              secondary={option.Mail}
             />
           </ListItem>
         )}
@@ -82,13 +86,13 @@ const CustomerSearch = ({
         )}
         filterOptions={(options, params) => {
           const filtered = filter(options, params);
-
+          //adding a list item at the end of the list (add new customer) --> dirty hack to use Vorname
           if (params.inputValue !== "") {
             filtered.push({
               Vorname: labelNewCustomer,
               Nachname: "",
-              Email: "",
-              id: -1,
+              Mail: "",
+              Nummer: -1,
             });
           }
 

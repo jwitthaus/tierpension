@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 
 import { Box, Button, TextField } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
@@ -15,54 +15,63 @@ import Capacity from "../../Bookings/Capacity/Capacity";
 import CustomerSearch from "./CustomerSearch";
 
 const NewBookingDialog = ({ visible, callbackClose }) => {
-  const randomIdInRange = (min, max) => {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+  const [createNewCustomer, setCreateNewCustomer] = useState(false);
+  const newCustomer = {
+    Vorname: "",
+    Nachname: "",
+    NameIntern: "",
+    Mail: "",
+  };
+  const newBooking = {
+    Kunden_ID: null,
+    Tier_ID: null,
+    Beginn_Datum: "2024-06-18 00:00:00",
+    Ende_Datum: "2024-06-18 00:00:00",
   };
 
-  const [newCustomer, setNewCustomer] = useState(false);
-  const [selectedCustomerData, setSelectedCustomerData] = useState({
-    id: randomIdInRange(1, 20),
-    vorname: "",
-    nachname: "",
-    email: "",
-  });
-
   const showNewCustomer = () => {
-    setNewCustomer(true);
+    setCreateNewCustomer(true);
   };
 
   const handleClose = () => {
-    setNewCustomer(false);
-    setStartDate(null);
-    setEndDate(null);
+    setCreateNewCustomer(false);
+    //setStartDate(null);
+    //setEndDate(null);
     callbackClose();
   };
 
   const handleCustomerSelected = (data) => {
-    setSelectedCustomerData({
-      ...selectedCustomerData,
-      id: randomIdInRange(1, 20),
-      vorname: data.Vorname,
-      nachname: data.Nachname,
-      email: data.Email,
-    });
+    newBooking.Kunden_ID = data.Nummer;
   };
 
   const handleChange = (e) => {
-    setSelectedCustomerData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+    newCustomer[e.target.name] = e.target.value;
   };
 
   const handleSubmit = async (e) => {
     //e.preventDefault();
-    try {
-      await axios.post("http://localhost:8081/customers", selectedCustomerData);
+    if (createNewCustomer) {
+      try {
+        await axios
+          .post("http://localhost:8081/customers", newCustomer)
+          .then((response) => {
+            //Kunden ID of added customer
+            //console.log(response.data.insertId);
+            newBooking.Kunden_ID = response.data.insertId;
+            console.log("post new booking: " + newBooking.Kunden_ID);
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    /*try {
+      await console.log(
+        axios.post("http://localhost:8081/bookings", newBooking)
+      );
       //handleClose();
     } catch (error) {
       console.log(error);
-    }
+    }*/
   };
 
   const [startDate, setStartDate] = useState(null);
@@ -123,7 +132,7 @@ const NewBookingDialog = ({ visible, callbackClose }) => {
         <DialogTitle>New Booking</DialogTitle>
         <DialogContent>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {!newCustomer ? (
+            {!createNewCustomer ? (
               <CustomerSearch
                 required
                 handleNewCustomerSelected={showNewCustomer}
@@ -137,7 +146,7 @@ const NewBookingDialog = ({ visible, callbackClose }) => {
                   autoFocus
                   margin="dense"
                   id="vorname"
-                  name="vorname"
+                  name="Vorname"
                   label="First name"
                   type="text"
                   onChange={handleChange}
@@ -148,7 +157,7 @@ const NewBookingDialog = ({ visible, callbackClose }) => {
                   sx={{ flex: 1, minWidth: "150px" }}
                   margin="dense"
                   id="nachname"
-                  name="nachname"
+                  name="Nachname"
                   label="Last name"
                   type="text"
                   onChange={handleChange}
@@ -159,7 +168,7 @@ const NewBookingDialog = ({ visible, callbackClose }) => {
                   sx={{ flex: 1, minWidth: "150px" }}
                   margin="dense"
                   id="email"
-                  name="email"
+                  name="Mail"
                   label="Email"
                   type="text"
                   onChange={handleChange}

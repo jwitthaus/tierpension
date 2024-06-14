@@ -1,17 +1,11 @@
 import { Box, ListSubheader } from "@mui/material";
 import List from "@mui/material/List";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import BookingListItem from "../../BasicControls/BookingListItem";
 import styles from "./CustomerList.module.css";
+import axios from "axios";
 
 export default function CustomerList(props) {
-  /*useEffect(() => {
-    fetch("http://localhost:8081/customers")
-      .then((res) => res.json())
-      .then((data) => setData(data))
-      .catch((err) => console.log(err));
-  }, []);*/
-
   return (
     <Box>
       <List
@@ -35,17 +29,24 @@ export default function CustomerList(props) {
               >
                 {sectionId.title}
               </ListSubheader>
-              {sectionId.bookings.map((booking) => (
-                <BookingListItem
-                  key={`${sectionId.title}-${booking.dayStart}`}
-                  newItem="true"
-                  animal="cat"
-                  medication="true"
-                  intolerance="true"
-                  label={`${booking.lastName}, ${booking.firstName}`}
-                  onClick={() => props.scrollToDateCallback(booking.dayStart)}
-                />
-              ))}
+              {sectionId.bookings.map((booking) => {
+                const bookingState = booking.BuchStatus_ID;
+                console.log(bookingState);
+
+                return (
+                  <BookingListItem
+                    key={booking.LfdNr}
+                    newItem={bookingState === 60 ? true : false}
+                    animal="cat"
+                    medication="true"
+                    intolerance="true"
+                    label={booking.NameIntern}
+                    onClick={() =>
+                      props.scrollToDateCallback(new Date(booking.Beginn_Datum))
+                    }
+                  />
+                );
+              })}
             </ul>
           </li>
         ))}
@@ -53,3 +54,32 @@ export default function CustomerList(props) {
     </Box>
   );
 }
+
+/*return (
+    <Box>
+      <List
+        className={styles.customerList}
+        sx={{
+          height: "100%",
+          "& ul": { padding: 0 },
+        }}
+        subheader={<li />}
+      >
+        {props.data.map((booking) => (
+          <li key={booking.LfdNr}>
+            <ul>
+              <BookingListItem
+                key={booking.LfdNr}
+                newItem="true"
+                animal="cat"
+                medication="true"
+                intolerance="true"
+                label={booking.NameIntern}
+                onClick={() => props.scrollToDateCallback(booking.Beginn_Datum)}
+              />
+            </ul>
+          </li>
+        ))}
+      </List>
+    </Box>
+  );*/

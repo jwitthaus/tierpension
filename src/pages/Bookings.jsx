@@ -14,70 +14,26 @@ import DateBar from "../components/Bookings/Timeline/DateBar";
 import { addDays, differenceInCalendarDays, format, subDays } from "date-fns";
 
 import { animate, motion } from "framer-motion";
+import axios from "axios";
 
 export const Context = createContext();
 
 export default function Bookings() {
-  const [bookings, setBookings] = useState([
-    {
-      //Niklas fragen, ob das bei ihm 15 ode 16 Tage sind? --> es sind zwar 16 Tage aber 15 Übernachtungen
-      //Der Balken fängt am 2. an, aber wann soll er aufhören? Inklusive 8.?
-      dayStart: new Date(2024, 4, 23),
-      dayEnd: new Date(2024, 5, 4),
-      firstName: "Holger",
-      lastName: "Witthaus",
-      id: "booking1",
-    },
-    {
-      dayStart: new Date(2024, 5, 4),
-      dayEnd: new Date(2024, 5, 24),
-      firstName: "Jörg",
-      lastName: "Witthaus",
-      id: "booking2",
-    },
-    {
-      dayStart: new Date(2024, 5, 5),
-      dayEnd: new Date(2024, 5, 8),
-      firstName: "Jörg",
-      lastName: "Witthaus",
-      id: "booking3",
-    },
-    {
-      dayStart: new Date(2024, 5, 9),
-      dayEnd: new Date(2024, 5, 24),
-      firstName: "Jörg",
-      lastName: "Witthaus",
-      id: "booking4",
-    },
-    {
-      dayStart: new Date(2024, 6, 1),
-      dayEnd: new Date(2024, 6, 10),
-      firstName: "Jörg",
-      lastName: "Witthaus",
-      id: "booking5",
-    },
-    {
-      dayStart: new Date(2024, 6, 12),
-      dayEnd: new Date(2024, 6, 24),
-      firstName: "Jörg",
-      lastName: "Witthaus",
-      id: "booking6",
-    },
-    {
-      dayStart: new Date(2024, 6, 15),
-      dayEnd: new Date(2024, 6, 26),
-      firstName: "Jörg",
-      lastName: "Witthaus",
-      id: "booking7",
-    },
-    {
-      dayStart: new Date(2024, 6, 18),
-      dayEnd: new Date(2024, 6, 22),
-      firstName: "Jörg",
-      lastName: "Witthaus",
-      id: "booking8",
-    },
-  ]);
+  const [bookings, setBookings] = useState([]);
+
+  useEffect(() => {
+    const fetchAllBookings = async () => {
+      try {
+        const res = await axios.get(
+          "http://localhost:8081/bookingsWithCustomers"
+        );
+        setBookings(groupBookings(res.data));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchAllBookings();
+  }, [setBookings]);
 
   //Tage errechnen sich aus Tag der Rückgabe der spätesten Buchung - heutiges Datum (in Tagen)
   //--> vorausgesetzt man kann nicht in die Vergangenheit scrollen
@@ -93,24 +49,24 @@ export default function Bookings() {
   const timelineStart = subDays(today, offsetBeforeToday); //to be configurable from config file or database
   const timelineEnd = addDays(timelineStart, timelineLength);
 
-  const groupBookings = () => {
+  const groupBookings = (input) => {
     //statt bookings hier im code zu gruppieren, Vorschlag von Papa:
     //erst werden aus der DB die Monatsgruppen abgefragt
     //diese werden dann per forEach durchiteriert und die jeweiligen Buchungen aus der Datenbank abgefragt
     let grouped = [];
     let monthIterator = "";
 
-    bookings.forEach((element) => {
-      let group = format(element.dayStart, "MMMM yy");
+    input.forEach((element) => {
+      let group = format(new Date(element.Beginn_Datum), "MMMM yy");
       if (group !== monthIterator) {
         //noch keine Gruppe für den Monat
         //--> Gruppe erzeugen
         let obj = {};
         obj.title = group;
-        obj.bookings = bookings.filter(
+        obj.bookings = input.filter(
           (booking) =>
-            format(booking.dayStart, "MMMM yy") === group &&
-            differenceInCalendarDays(booking.dayEnd, timelineStart) >= 0
+            format(new Date(booking.Beginn_Datum), "MMMM yy") === group &&
+            differenceInCalendarDays(booking.Ende_Datum, timelineStart) >= 0
         );
         grouped.push(obj);
 
@@ -120,32 +76,44 @@ export default function Bookings() {
 
     return grouped;
   };
-  const [groupedBookings, setGroupedBookings] = useState(groupBookings());
 
   const capacityRef = useRef(null);
   const timelineRef = useRef(null);
 
   const [visibleDays, setVisibleDays] = useState(7);
-  const [visibleWidth, setVisibleWidth] = useState(
-    timelineRef.current?.offsetWidth
+  const [lastTimelineScale, setLastTimelineScale] = useState(
+    (timelineLength / visibleDays) * 100
+  );
+  const [timelineScale, setTimelineScale] = useState(
+    (timelineLength / visibleDays) * 100
   );
 
   //visible Days changed
   useEffect(() => {
-    //hier die aktuelle scrollPosition merken und umrechnen auf den neuen zoom
-    //dann aus scrollLeft anwenden
-    //timelineRef.current.scrollLeft = (7 * timelineRef.current.scrollLeft) / 31;
     const relativeScrollPosition =
       visibleDays === 31
         ? (7 * timelineRef.current.scrollLeft) / 31
         : (31 * timelineRef.current.scrollLeft) / 7;
+    const targetScale = (timelineLength / visibleDays) * 100;
+    animate(lastTimelineScale, targetScale, {
+      ease: "linear",
+      onUpdate: (latest) => {
+        setTimelineScale(latest);
+        //console.log("scale: " + latest);
+      },
+      onComplete: () => {
+        setLastTimelineScale(targetScale);
+        //console.log(timelineScale);
+      },
+    });
     animate(timelineRef.current.scrollLeft, relativeScrollPosition, {
+      ease: "linear",
       onUpdate: (latest) => {
         timelineRef.current.scrollLeft = latest;
         capacityRef.current.scrollLeft = latest;
+        //console.log("scroll: " + latest);
       },
     });
-    setVisibleWidth(timelineRef.current.offsetWidth);
   }, [visibleDays]);
 
   const handleScrollTimeline = (scroll) => {
@@ -154,22 +122,17 @@ export default function Bookings() {
 
   const scrollToDateCallback = useCallback((date) => {
     let difference = differenceInCalendarDays(date, timelineStart);
-    console.log(timelineRef.current?.offsetWidth);
     let scrollPosition =
       (difference * timelineRef.current?.offsetWidth) / visibleDays;
     animate(timelineRef.current.scrollLeft, scrollPosition, {
+      ease: "linear",
       onUpdate: (latest) => (timelineRef.current.scrollLeft = latest),
     });
     //timelineRef.current.scrollLeft = scrollPosition;
   }, []);
   return (
     <>
-      <Context.Provider
-        value={{
-          viewDays: [visibleDays, setVisibleDays],
-          viewWidth: [visibleWidth, setVisibleWidth],
-        }}
-      >
+      <Context.Provider value={[visibleDays, setVisibleDays]}>
         <div className={styles.bookings}>
           <div className={styles.toparea}>
             <div className={styles.toolbar}>
@@ -177,23 +140,23 @@ export default function Bookings() {
             </div>
             <div ref={capacityRef} className={styles.capacity}>
               <Capacity
-                visibleDays={visibleDays}
+                timelineScale={timelineScale}
                 timelineStart={timelineStart}
                 timelineEnd={timelineEnd}
-                data={groupedBookings}
+                data={bookings}
               />
               <DateBar
-                visibleDays={visibleDays}
+                timelineScale={timelineScale}
                 timelineStart={timelineStart}
                 timelineEnd={timelineEnd}
-                data={groupedBookings}
+                data={bookings}
               />
             </div>
           </div>
           <div className={styles.bottomarea}>
             <div className={styles.customerList}>
               <CustomerList
-                data={groupedBookings}
+                data={bookings}
                 scrollToDateCallback={scrollToDateCallback}
               />
             </div>
@@ -206,7 +169,8 @@ export default function Bookings() {
               <Timeline
                 timelineStart={timelineStart}
                 timelineEnd={timelineEnd}
-                data={groupedBookings}
+                timelineScale={timelineScale}
+                data={bookings}
                 scrollToDateCallback={scrollToDateCallback}
               />
             </div>
