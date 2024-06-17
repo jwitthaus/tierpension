@@ -1,9 +1,10 @@
+import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
-import { Controller } from "react-hook-form";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+
+import TimelapseIcon from "@mui/icons-material/Timelapse";
 import de from "date-fns/locale/de";
-import { InputLabel } from "@mui/material";
-export const FormInputDate = ({ name, control, label }) => {
+import { Controller } from "react-hook-form";
+export const FormInputTime = ({ name, control, label }) => {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={de}>
       <Controller
@@ -12,7 +13,7 @@ export const FormInputDate = ({ name, control, label }) => {
         control={control}
         render={({ field: { onChange, value }, fieldState: { error } }) => {
           return (
-            <DatePicker
+            <TimePicker
               value={value}
               onChange={onChange}
               label={label}
@@ -26,7 +27,6 @@ export const FormInputDate = ({ name, control, label }) => {
                 },
               }}
             />
-            //how to pass disablePast and maxDate={endDate} or minDate={startDate}
           );
         }}
       />

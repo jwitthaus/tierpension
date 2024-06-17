@@ -34,12 +34,18 @@ app.get("/bookings", (req, res) => {
 });
 
 app.get("/bookingsWithCustomers", (req, res) => {
-  const sql =
-    "SELECT Buchungen.*, Kunden.NameIntern, Tiere.Name1, Tiere.Geburtstag, Tiere.Geschlecht, TierRassen.Name1, TierArten.Code FROM ((((Buchungen INNER JOIN Kunden ON Kunden.Nummer = Buchungen.Kunden_ID) INNER JOIN Tiere ON Tiere.Nummer = Buchungen.Tier_ID) LEFT JOIN TierRassen ON TierRassen.Nummer = Tiere.TierRasse_ID) LEFT JOIN TierArten ON TierArten.Code = TierRassen.TierArt_ID) ORDER BY Buchungen.Beginn_Datum";
+  const searchTerm = req.query.search || "";
+  const sql = `SELECT Buchungen.*, Kunden.NameIntern, Tiere.Name1, Tiere.Geburtstag, Tiere.Geschlecht, TierRassen.Name1, TierArten.Code 
+    FROM ((((Buchungen INNER JOIN Kunden ON Kunden.Nummer = Buchungen.Kunden_ID) INNER JOIN Tiere ON Tiere.Nummer = Buchungen.Tier_ID) LEFT JOIN TierRassen ON TierRassen.Nummer = Tiere.TierRasse_ID) LEFT JOIN TierArten ON TierArten.Code = TierRassen.TierArt_ID) 
+    WHERE Kunden.NameIntern LIKE ?
+    ORDER BY Buchungen.Beginn_Datum`;
   //Festlegung: From .... dann zuerst Basistabelle, dann zu joinende Tabelle, dann zu verknüpfende Felder
   //Inner Join = Ergebnis wenn auch Daten vom Join vorhanden sind
   //Left Join = liefert immer Ergebnis auch wenn nicht gefüllt ist
-  db.query(sql, (err, data) => {
+
+  const values = [`%${searchTerm}%`];
+
+  db.query(sql, values, (err, data) => {
     if (err) return res.json(err);
     return res.json(data);
   });
@@ -47,13 +53,17 @@ app.get("/bookingsWithCustomers", (req, res) => {
 
 app.post("/bookings", (req, res) => {
   const sql =
-    "INSERT INTO Buchungen (`Kunden_ID`, `Tier_ID`, `Beginn_Datum`, `Ende_Datum`) VALUES (?)";
+    "INSERT INTO Buchungen (`Kunden_ID`, `Tier_ID`, `Beginn_Datum`, `Beginn_Start`, `Beginn_Zeitraum`, `Ende_Datum`, `Ende_Start`, `Ende_Zeitraum`) VALUES (?)";
   console.log(req.body);
   const values = [
     req.body.Kunden_ID,
     req.body.Tier_ID,
     req.body.Beginn_Datum,
+    req.body.Beginn_Start,
+    req.body.Beginn_Zeitraum,
     req.body.Ende_Datum,
+    req.body.Ende_Start,
+    req.body.Ende_Zeitraum,
   ];
 
   db.query(sql, [values], (err, data) => {

@@ -1,39 +1,26 @@
+import { addDays, differenceInCalendarDays, format, subDays } from "date-fns";
+import { animate } from "framer-motion";
 import React, {
-  createContext,
   useCallback,
+  useContext,
   useEffect,
   useRef,
   useState,
 } from "react";
+import { useQuery, useQueryClient } from "react-query";
 import Capacity from "../components/Bookings/Capacity/Capacity";
 import CustomerList from "../components/Bookings/CustomerList/CustomerList";
+import DateBar from "../components/Bookings/Timeline/DateBar";
 import Timeline from "../components/Bookings/Timeline/Timeline";
 import BookingsToolBar from "../components/Bookings/Toolbar/BookingsToolBar";
+import { FilterContext } from "../components/Bookings/Toolbar/FilterProvider.jsx";
+import { TimelineSettingsContext } from "../components/Bookings/Toolbar/TimelineSettingsProvider.jsx";
 import styles from "./Bookings.module.css";
-import DateBar from "../components/Bookings/Timeline/DateBar";
-import { addDays, differenceInCalendarDays, format, subDays } from "date-fns";
 
-import { animate, motion } from "framer-motion";
-import axios from "axios";
+export default function Bookings(props) {
+  const { visibleDays } = useContext(TimelineSettingsContext);
 
-export const Context = createContext();
-
-export default function Bookings() {
-  const [bookings, setBookings] = useState([]);
-
-  useEffect(() => {
-    const fetchAllBookings = async () => {
-      try {
-        const res = await axios.get(
-          "http://localhost:8081/bookingsWithCustomers"
-        );
-        setBookings(groupBookings(res.data));
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchAllBookings();
-  }, [setBookings]);
+  const queryClient = useQueryClient();
 
   //Tage errechnen sich aus Tag der Rückgabe der spätesten Buchung - heutiges Datum (in Tagen)
   //--> vorausgesetzt man kann nicht in die Vergangenheit scrollen
@@ -49,38 +36,9 @@ export default function Bookings() {
   const timelineStart = subDays(today, offsetBeforeToday); //to be configurable from config file or database
   const timelineEnd = addDays(timelineStart, timelineLength);
 
-  const groupBookings = (input) => {
-    //statt bookings hier im code zu gruppieren, Vorschlag von Papa:
-    //erst werden aus der DB die Monatsgruppen abgefragt
-    //diese werden dann per forEach durchiteriert und die jeweiligen Buchungen aus der Datenbank abgefragt
-    let grouped = [];
-    let monthIterator = "";
-
-    input.forEach((element) => {
-      let group = format(new Date(element.Beginn_Datum), "MMMM yy");
-      if (group !== monthIterator) {
-        //noch keine Gruppe für den Monat
-        //--> Gruppe erzeugen
-        let obj = {};
-        obj.title = group;
-        obj.bookings = input.filter(
-          (booking) =>
-            format(new Date(booking.Beginn_Datum), "MMMM yy") === group &&
-            differenceInCalendarDays(booking.Ende_Datum, timelineStart) >= 0
-        );
-        grouped.push(obj);
-
-        monthIterator = group;
-      }
-    });
-
-    return grouped;
-  };
-
   const capacityRef = useRef(null);
   const timelineRef = useRef(null);
 
-  const [visibleDays, setVisibleDays] = useState(7);
   const [lastTimelineScale, setLastTimelineScale] = useState(
     (timelineLength / visibleDays) * 100
   );
@@ -132,51 +90,49 @@ export default function Bookings() {
   }, []);
   return (
     <>
-      <Context.Provider value={[visibleDays, setVisibleDays]}>
-        <div className={styles.bookings}>
-          <div className={styles.toparea}>
-            <div className={styles.toolbar}>
-              <BookingsToolBar />
-            </div>
-            <div ref={capacityRef} className={styles.capacity}>
-              <Capacity
-                timelineScale={timelineScale}
-                timelineStart={timelineStart}
-                timelineEnd={timelineEnd}
-                data={bookings}
-              />
-              <DateBar
-                timelineScale={timelineScale}
-                timelineStart={timelineStart}
-                timelineEnd={timelineEnd}
-                data={bookings}
-              />
-            </div>
+      <div className={styles.bookings}>
+        <div className={styles.toparea}>
+          <div className={styles.toolbar}>
+            <BookingsToolBar />
           </div>
-          <div className={styles.bottomarea}>
-            <div className={styles.customerList}>
-              <CustomerList
-                data={bookings}
-                scrollToDateCallback={scrollToDateCallback}
-              />
-            </div>
-            <div
-              ref={timelineRef}
-              className={styles.timeline}
-              onScroll={handleScrollTimeline}
-              //onMouseDown={handleMouseDownTimeline}
-            >
-              <Timeline
-                timelineStart={timelineStart}
-                timelineEnd={timelineEnd}
-                timelineScale={timelineScale}
-                data={bookings}
-                scrollToDateCallback={scrollToDateCallback}
-              />
-            </div>
+          <div ref={capacityRef} className={styles.capacity}>
+            <Capacity
+              timelineScale={timelineScale}
+              timelineStart={timelineStart}
+              timelineEnd={timelineEnd}
+              data={props.data}
+            />
+            <DateBar
+              timelineScale={timelineScale}
+              timelineStart={timelineStart}
+              timelineEnd={timelineEnd}
+              data={props.data}
+            />
           </div>
         </div>
-      </Context.Provider>
+        <div className={styles.bottomarea}>
+          <div className={styles.customerList}>
+            <CustomerList
+              data={props.data}
+              scrollToDateCallback={scrollToDateCallback}
+            />
+          </div>
+          <div
+            ref={timelineRef}
+            className={styles.timeline}
+            onScroll={handleScrollTimeline}
+            //onMouseDown={handleMouseDownTimeline}
+          >
+            <Timeline
+              timelineStart={timelineStart}
+              timelineEnd={timelineEnd}
+              timelineScale={timelineScale}
+              data={props.data}
+              scrollToDateCallback={scrollToDateCallback}
+            />
+          </div>
+        </div>
+      </div>
     </>
   );
 }

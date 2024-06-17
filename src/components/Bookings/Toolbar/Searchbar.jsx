@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -8,23 +8,24 @@ import {
   InputAdornment,
   TextField,
 } from "@mui/material";
+import { FilterContext } from "./FilterProvider.jsx";
 
 const Searchbar = () => {
-  const [value, setValue] = useState("");
+  const { searchTerm, setSearchTerm } = useContext(FilterContext);
 
   const handleChange = (event) => {
-    setValue(event.target.value);
+    setSearchTerm(event.target.value);
   };
 
-  const handleClick = () => {
-    setValue("");
+  const handleClear = () => {
+    setSearchTerm("");
   };
 
   return (
     <>
       <FormControl sx={{ width: "100%" }}>
         <TextField
-          value={value}
+          value={searchTerm}
           size="small"
           variant="outlined"
           onChange={handleChange}
@@ -39,8 +40,8 @@ const Searchbar = () => {
             ),
             endAdornment: (
               <IconButton
-                onClick={handleClick}
-                sx={{ visibility: value ? "visible" : "hidden" }}
+                onClick={handleClear}
+                sx={{ visibility: searchTerm ? "visible" : "hidden" }}
               >
                 <ClearIcon />
               </IconButton>

@@ -30,12 +30,15 @@ export default function DateBar(props) {
       height={25}
     >
       <div className={styles.dayColumns}>
-        {new Array(timelineLength).fill(0).map((_, index) => (
-          <DateBarColumn
-            date={addDays(props.timelineStart, index)}
-            key={index}
-          ></DateBarColumn>
-        ))}
+        {new Array(timelineLength).fill(0).map((_, index) => {
+          //console.log(index);
+          return (
+            <DateBarColumn
+              date={addDays(props.timelineStart, index)}
+              key={index}
+            />
+          );
+        })}
       </div>
     </Box>
   );

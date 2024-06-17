@@ -1,15 +1,15 @@
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { Box, IconButton, Typography } from "@mui/material";
 import React, { useCallback, useContext } from "react";
-import Searchbar from "./Searchbar";
 import styles from "./BookingsToolBar.module.css";
 import FilterPanel from "./FilterPanel";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import { Context } from "../../../pages/Bookings";
+import Searchbar from "./Searchbar";
+import { TimelineSettingsContext } from "./TimelineSettingsProvider";
 
 const BookingsToolBar = () => {
   const [filterOpen, setFilterOpen] = React.useState(false);
-  const [visibleDays, setVisibleDays] = useContext(Context);
+  const { setVisibleDays } = useContext(TimelineSettingsContext);
 
   const handleFilterOpen = () => {
     setFilterOpen(true);

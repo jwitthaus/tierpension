@@ -1,6 +1,6 @@
 import React from "react";
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
-import { format, parse, startOfWeek, getDay } from "date-fns";
+import { format, parse, startOfWeek, getDay, addMinutes } from "date-fns";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import {
   Button,
@@ -69,12 +69,28 @@ function CustomToolbar() {
   );
 }
 
-const CalendarPage = () => {
+const CalendarPage = (props) => {
+  const appointments = props.data?.flatMap((event) => [
+    {
+      id: `${event.LfdNr}_start`,
+      start: new Date(event.Beginn_Start),
+      end: addMinutes(new Date(event.Beginn_Start), event.Beginn_Zeitraum),
+      title: event.NameIntern,
+    },
+    {
+      id: `${event.LfdNr}_end`,
+      start: new Date(event.Ende_Start),
+      end: addMinutes(new Date(event.Ende_Start), event.Ende_Zeitraum),
+      title: event.NameIntern,
+    },
+  ]);
+  console.log(appointments);
+
   return (
     <Container sx={{ height: "80%" }}>
       <Calendar
         localizer={localizer}
-        events={events}
+        events={appointments}
         startCcessor="start"
         endAccessor="end"
         culture="de"

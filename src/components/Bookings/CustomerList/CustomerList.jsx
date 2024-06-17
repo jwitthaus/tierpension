@@ -31,7 +31,6 @@ export default function CustomerList(props) {
               </ListSubheader>
               {sectionId.bookings.map((booking) => {
                 const bookingState = booking.BuchStatus_ID;
-                console.log(bookingState);
 
                 return (
                   <BookingListItem
