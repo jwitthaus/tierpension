@@ -50,7 +50,6 @@ const BookingDetails = ({ visible, callbackClose, selectedBookingData }) => {
     const fetchAllCustomers = async () => {
       try {
         const res = await axios.get("http://localhost:8081/customers");
-        console.log(res.data);
         setCustomerList(res.data);
       } catch (error) {
         console.log(error);
@@ -79,7 +78,7 @@ const BookingDetails = ({ visible, callbackClose, selectedBookingData }) => {
       setValue("Ende_Zeitraum", selectedBookingData.Ende_Zeitraum);
       setValue("Tier_ID", selectedBookingData.Tier_ID);
     }
-  }, [selectedBookingData, setValue]);
+  }, [selectedBookingData, setValue, customerList]);
 
   const watchDates = useWatch({
     control,

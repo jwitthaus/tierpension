@@ -9,7 +9,7 @@ import BackgroundColumn from "./BackgroundColumn";
 import styles from "./Timeline.module.css";
 import BookingDetails from "../../BookingDetails/BookingDetails";
 import axios from "axios";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -31,6 +31,8 @@ const fetchBookingData = async (bookingID) => {
 export default function Timeline(props) {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [bookingDetailsOpen, setBookingDetailsOpen] = useState(false);
+  const queryClient = useQueryClient();
+
   const { data, isLoading, error } = useQuery(
     ["booking", selectedBooking],
     () => fetchBookingData(selectedBooking),
@@ -41,11 +43,13 @@ export default function Timeline(props) {
 
   const handleBookingClose = useCallback(() => {
     setBookingDetailsOpen(false);
-  }, []);
+    setSelectedBooking(null);
+    queryClient.invalidateQueries(["booking", selectedBooking]); // Ungültig machen der Query, um sicherzustellen, dass die Daten beim nächsten Mal neu geladen werden
+  }, [queryClient, selectedBooking]);
 
   useEffect(() => {
     if (data) {
-      setBookingDetailsOpen(true); // Öffnen Sie das Detailfenster, wenn Daten geladen wurden
+      setBookingDetailsOpen(true); // Öffne das Detailfenster, wenn Daten geladen wurden
     }
   }, [data]);
 
