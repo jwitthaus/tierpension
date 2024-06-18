@@ -6,8 +6,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 import axios from "axios";
 import "dayjs/locale/de";
 import React, { Fragment, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import Capacity from "../../Bookings/Capacity/Capacity";
+import { useForm, useWatch } from "react-hook-form";
+import Capacity from "../Bookings/Capacity/Capacity";
 import { FormInputDate } from "./FormInputDate";
 import { FormInputText } from "./FormInputText";
 import { FormAutoComplete } from "./FormAutoComplete";
@@ -42,7 +42,7 @@ const defaultValues = {
   Tier_ID: 5,
 };
 
-const NewBookingDialog = ({ visible, callbackClose }) => {
+const BookingDetails = ({ visible, callbackClose, selectedBookingData }) => {
   const queryClient = useQueryClient();
 
   const [customerList, setCustomerList] = useState([]);
@@ -50,6 +50,7 @@ const NewBookingDialog = ({ visible, callbackClose }) => {
     const fetchAllCustomers = async () => {
       try {
         const res = await axios.get("http://localhost:8081/customers");
+        console.log(res.data);
         setCustomerList(res.data);
       } catch (error) {
         console.log(error);
@@ -62,22 +63,49 @@ const NewBookingDialog = ({ visible, callbackClose }) => {
     defaultValues: defaultValues,
   });
 
-  const watchCustomerSelection = watch("Kunden_ID");
-  const watchStartDate = watch("Beginn_Datum");
-  const watchEndDate = watch("Ende_Datum");
+  //wenn dieses Formular geöffnet wird, weil eine vorhandene Buchung selektiert wird,
+  //dann sollen alle Details der Buchung in die Felder übernommen werden
+  useEffect(() => {
+    if (selectedBookingData) {
+      const selectedCustomer = customerList.find(
+        (customer) => customer.Nummer === selectedBookingData.Kunden_ID
+      );
+      setValue("Kunden_ID", selectedCustomer || null);
+      setValue("Beginn_Datum", new Date(selectedBookingData.Beginn_Datum));
+      setValue("Beginn_Start", new Date(selectedBookingData.Beginn_Start));
+      setValue("Beginn_Zeitraum", selectedBookingData.Beginn_Zeitraum);
+      setValue("Ende_Datum", new Date(selectedBookingData.Ende_Datum));
+      setValue("Ende_Start", new Date(selectedBookingData.Ende_Start));
+      setValue("Ende_Zeitraum", selectedBookingData.Ende_Zeitraum);
+      setValue("Tier_ID", selectedBookingData.Tier_ID);
+    }
+  }, [selectedBookingData, setValue]);
 
-  //the date from the time picker needs to be set to the date from the date picker, because time pickers default date is always "today"
-  //but wee need to keep the picked time
-  const setToSelectedDate = (dateToChange, selectedDate) => {
-    let newHours = getHours(dateToChange);
-    let newMinutes = getMinutes(dateToChange);
-    dateToChange = selectedDate;
-    dateToChange = setHours(dateToChange, newHours);
-    dateToChange = setMinutes(dateToChange, newMinutes);
-    dateToChange = format(dateToChange, "yyyy-MM-dd HH:mm:ss");
+  const watchDates = useWatch({
+    control,
+    name: ["Beginn_Datum", "Ende_Datum"],
+  });
 
-    return dateToChange;
-  };
+  const watchCustomerSelection = useWatch({
+    control,
+    name: "Kunden_ID.Nummer",
+  });
+
+  //wenn das Datum gesetzt wurde, wird Die Zeit auf den selben Tag gesetzt
+  //denn bei der Selektion der Zeit wird wirklich nur die Zeit ausgewählt und der Tag würde nicht dem selektierten Datum entsprechen
+  useEffect(() => {
+    let [startDate, endDate] = watchDates;
+    if (startDate) {
+      startDate = setHours(startDate, getHours(startTime));
+      startDate = setMinutes(startDate, getMinutes(startTime));
+      setValue("Beginn_Start", startDate);
+    }
+    if (endDate) {
+      endDate = setHours(endDate, getHours(endTime));
+      endDate = setMinutes(endDate, getMinutes(endTime));
+      setValue("Ende_Start", endDate);
+    }
+  }, [watchDates, setValue]);
 
   const onSubmit = async (data) => {
     //create new Customer selected
@@ -87,16 +115,17 @@ const NewBookingDialog = ({ visible, callbackClose }) => {
           .post("http://localhost:8081/customers", data)
           .then((response) => {
             //Kunden ID of added customer
-            data.Kunden_ID = response.data.insertId;
+            data.Kunden_ID = response.data.insertId; //we only need Kunden_ID
           });
       } catch (error) {
         console.log(error);
       }
     }
+    data.Kunden_ID = data.Kunden_ID.Nummer; //we only need Kunden_ID
     data.Beginn_Datum = format(data.Beginn_Datum, "yyyy-MM-dd HH:mm:ss");
-    data.Beginn_Start = setToSelectedDate(data.Beginn_Start, data.Beginn_Datum);
+    data.Beginn_Start = format(data.Beginn_Start, "yyyy-MM-dd HH:mm:ss");
     data.Ende_Datum = format(data.Ende_Datum, "yyyy-MM-dd HH:mm:ss");
-    data.Ende_Start = setToSelectedDate(data.Ende_Start, data.Ende_Datum);
+    data.Ende_Start = format(data.Ende_Start, "yyyy-MM-dd HH:mm:ss");
     try {
       await axios.post("http://localhost:8081/bookings", data);
     } catch (error) {
@@ -106,26 +135,10 @@ const NewBookingDialog = ({ visible, callbackClose }) => {
     handleClose();
   };
 
-  /*const newCustomer = {
-    Vorname: "",
-    Nachname: "",
-    NameIntern: "",
-    Mail: "",
-  };
-  const newBooking = {
-    Kunden_ID: null,
-    Tier_ID: null,
-    Beginn_Datum: "2024-06-18 00:00:00",
-    Ende_Datum: "2024-06-18 00:00:00",
-  };*/
-
   const handleClose = () => {
     reset();
     callbackClose();
   };
-
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
 
   return (
     <Fragment>
@@ -221,4 +234,4 @@ const NewBookingDialog = ({ visible, callbackClose }) => {
             ) : null}
              */
 
-export default NewBookingDialog;
+export default BookingDetails;

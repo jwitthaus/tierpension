@@ -38,12 +38,13 @@ export const FormAutoComplete = ({ name, control, label, options }) => {
       }) => (
         <Autocomplete
           freeSolo
+          value={value || null}
           options={options}
           getOptionLabel={(option) => {
             return option.Nachname + ", " + option.Vorname;
           }}
           onChange={(event, newValue) => {
-            onChange(newValue ? newValue.Nummer : null);
+            onChange(newValue || null);
           }}
           id="controllable-states-demo"
           renderInput={(params) => (

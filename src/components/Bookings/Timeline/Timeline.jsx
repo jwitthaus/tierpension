@@ -3,16 +3,13 @@ import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import { addDays, differenceInCalendarDays, format, parseISO } from "date-fns";
-import * as React from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { animate, motion } from "framer-motion";
-import { Popover, Typography } from "@mui/material";
-import { useState } from "react";
 import BackgroundColumn from "./BackgroundColumn";
 import styles from "./Timeline.module.css";
-import { Context } from "../../../pages/Bookings";
-import { useEffect } from "react";
-import { useContext } from "react";
-import { useRef } from "react";
+import BookingDetails from "../../BookingDetails/BookingDetails";
+import axios from "axios";
+import { useQuery } from "react-query";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -24,8 +21,33 @@ const Item = styled(Paper)(({ theme }) => ({
   borderRadius: "8px",
 }));
 
+const fetchBookingData = async (bookingID) => {
+  const response = await axios.get(
+    `http://localhost:8081/booking?LfdNr=${bookingID}`
+  );
+  return response.data;
+};
+
 export default function Timeline(props) {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [bookingDetailsOpen, setBookingDetailsOpen] = useState(false);
+  const { data, isLoading, error } = useQuery(
+    ["booking", selectedBooking],
+    () => fetchBookingData(selectedBooking),
+    {
+      enabled: !!selectedBooking, // Die Abfrage wird nur ausgeführt, wenn eine `bookingID` ausgewählt wurde
+    }
+  );
+
+  const handleBookingClose = useCallback(() => {
+    setBookingDetailsOpen(false);
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+      setBookingDetailsOpen(true); // Öffnen Sie das Detailfenster, wenn Daten geladen wurden
+    }
+  }, [data]);
 
   const timelineLength = differenceInCalendarDays(
     props.timelineEnd,
@@ -34,23 +56,7 @@ export default function Timeline(props) {
 
   const timelineRef = useRef(null);
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
-
-  const AnimatedBox = motion(Box);
-
   return (
-    //Für die Erzeugung des Grids ist es wichtig ein leeres grid vor den Balken zu legen,
-    //dann ein grid für den Balken selbst
-    //und wieder ein leeres grid für den kompletten Bereich hinter dem Balken bis zum Ende des charts. Nur so ist sicher gestellt, dass eine keine ungewollten Umbrüche gibt
     <Box
       ref={timelineRef}
       sx={{
@@ -78,102 +84,74 @@ export default function Timeline(props) {
                 props.timelineStart
               )}
             ></Grid>
-            {category.bookings.map((booking, j) => {
-              //actual rows for bantt bars
-              const startDate = format(
-                parseISO(booking.Beginn_Datum),
-                "eeee do MMM, yyyy"
-              );
-              const endDate = format(
-                parseISO(booking.Ende_Datum),
-                "eeee do MMM, yyyy"
-              );
-              return (
-                <React.Fragment key={j}>
-                  <Grid
-                    item
-                    height="48px"
-                    xs={
-                      //den doppelten Aufruf der Funktion vermeiden
-                      differenceInCalendarDays(
-                        new Date(booking.Beginn_Datum),
-                        props.timelineStart
-                      ) >= 0
-                        ? differenceInCalendarDays(
-                            new Date(booking.Beginn_Datum),
-                            props.timelineStart
-                          )
-                        : 0
-                    }
-                  ></Grid>
-                  <Grid
-                    item
-                    height="48px"
-                    xs={
-                      // +1 da selbst wenn der Buchungstag = timelineStart ist (Differenz = 0), dann soll ja trotzdem ein Balken von einem Tag angezeigt werden
-                      differenceInCalendarDays(
-                        new Date(booking.Beginn_Datum),
-                        props.timelineStart
-                      ) >= 0
-                        ? differenceInCalendarDays(
-                            new Date(booking.Ende_Datum),
-                            new Date(booking.Beginn_Datum)
-                          ) + 1
-                        : differenceInCalendarDays(
-                            new Date(booking.Ende_Datum),
-                            props.timelineStart
-                          ) + 1
-                    }
-                  >
-                    <Item
-                      elevation={2}
-                      onClick={handleClick}
-                      key={booking.id}
-                      sx={{ height: "36px", marginTop: "6px" }}
-                    >
-                      {
-                        //als label verwende ich die originale Länge der Buchung, auch wenn ein Teil bereits in der Vergangenheit liegt
-                        //--> mit Niklas klären
-                        differenceInCalendarDays(
+            {category.bookings.map((booking, j) => (
+              <React.Fragment key={j}>
+                <Grid
+                  item
+                  height="48px"
+                  xs={
+                    differenceInCalendarDays(
+                      new Date(booking.Beginn_Datum),
+                      props.timelineStart
+                    ) >= 0
+                      ? differenceInCalendarDays(
+                          new Date(booking.Beginn_Datum),
+                          props.timelineStart
+                        )
+                      : 0
+                  }
+                ></Grid>
+                <Grid
+                  item
+                  height="48px"
+                  xs={
+                    differenceInCalendarDays(
+                      new Date(booking.Beginn_Datum),
+                      props.timelineStart
+                    ) >= 0
+                      ? differenceInCalendarDays(
                           new Date(booking.Ende_Datum),
                           new Date(booking.Beginn_Datum)
                         ) + 1
-                      }
-                      days
-                    </Item>
-                  </Grid>
-                  <Grid
-                    item
-                    height="48px"
-                    xs={
-                      //-1 um den Tag von oben (+1) wieder auszugleichen
-                      differenceInCalendarDays(
-                        props.timelineEnd,
-                        new Date(booking.Ende_Datum)
-                      ) - 1
-                    }
-                  ></Grid>
-                </React.Fragment>
-              );
-            })}
+                      : differenceInCalendarDays(
+                          new Date(booking.Ende_Datum),
+                          props.timelineStart
+                        ) + 1
+                  }
+                >
+                  <Item
+                    elevation={2}
+                    onClick={() => setSelectedBooking(booking.LfdNr)}
+                    key={booking.LfdNr}
+                    sx={{ height: "36px", marginTop: "6px" }}
+                  >
+                    {differenceInCalendarDays(
+                      new Date(booking.Ende_Datum),
+                      new Date(booking.Beginn_Datum)
+                    ) + 1}{" "}
+                    days
+                  </Item>
+                </Grid>
+                <Grid
+                  item
+                  height="48px"
+                  xs={
+                    differenceInCalendarDays(
+                      props.timelineEnd,
+                      new Date(booking.Ende_Datum)
+                    ) - 1
+                  }
+                ></Grid>
+              </React.Fragment>
+            ))}
           </React.Fragment>
         ))}
       </Grid>
-      <Popover
-        elevation={4}
-        id={id}
-        open={open}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "center",
-        }}
-        disableScrollLock={true}
-        transformOrigin={{ horizontal: 0, vertical: -4 }}
-      >
-        <Typography sx={{ p: 2 }}>The content of the Popover.</Typography>
-      </Popover>
+      <BookingDetails
+        visible={bookingDetailsOpen}
+        callbackClose={handleBookingClose}
+        selectedBookingData={data?.[0]}
+      />
     </Box>
   );
 }

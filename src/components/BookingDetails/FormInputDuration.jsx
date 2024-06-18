@@ -1,20 +1,8 @@
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
-import { Controller } from "react-hook-form";
-import TimelapseIcon from "@mui/icons-material/Timelapse";
-import {
-  DatePicker,
-  LocalizationProvider,
-  TimePicker,
-} from "@mui/x-date-pickers";
 import de from "date-fns/locale/de";
-import {
-  FormControl,
-  FormHelperText,
-  InputLabel,
-  MenuItem,
-  OutlinedInput,
-  Select,
-} from "@mui/material";
+import { Controller } from "react-hook-form";
 export const FormInputDuration = ({ name, control, label }) => {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={de}>

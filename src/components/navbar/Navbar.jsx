@@ -16,7 +16,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
 import NavTabs from "./NavTabs";
-import NewBookingDialog from "./NewBooking/NewBookingDialog";
+import BookingDetails from "../BookingDetails/BookingDetails";
 
 const drawerWidth = 240;
 const navItems = ["Bookings", "Calendar", "Billing"];
@@ -124,7 +124,7 @@ function Navbar(props) {
           {drawer}
         </Drawer>
       </nav>
-      <NewBookingDialog
+      <BookingDetails
         visible={newBookingOpen}
         callbackClose={handleBookingClose}
       />

@@ -51,6 +51,16 @@ app.get("/bookingsWithCustomers", (req, res) => {
   });
 });
 
+app.get("/booking", (req, res) => {
+  const booking = req.query.LfdNr;
+  const sql = `SELECT * FROM Buchungen WHERE LfdNr = ?`;
+
+  db.query(sql, [booking], (err, data) => {
+    if (err) return res.json(err);
+    return res.json(data);
+  });
+});
+
 app.post("/bookings", (req, res) => {
   const sql =
     "INSERT INTO Buchungen (`Kunden_ID`, `Tier_ID`, `Beginn_Datum`, `Beginn_Start`, `Beginn_Zeitraum`, `Ende_Datum`, `Ende_Start`, `Ende_Zeitraum`) VALUES (?)";
