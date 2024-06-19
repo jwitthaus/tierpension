@@ -98,8 +98,12 @@ function Navbar(props) {
           <Button
             sx={{
               backgroundColor: "#fce2a6",
+              "&:hover": {
+                backgroundColor: "#E3C274",
+              },
               borderRadius: "12px",
               width: "150px",
+              minWidth: "150px",
             }}
             type="oncontrast"
             startIcon={<Add />}

@@ -143,6 +143,7 @@ const CalendarPage = (props) => {
         <Box
           sx={{
             flex: 1,
+            display: "flex",
           }}
         >
           <Button
@@ -152,18 +153,20 @@ const CalendarPage = (props) => {
           >
             today
           </Button>
-          <IconButton
-            sx={{ height: "40px", width: "40px" }}
-            onClick={onPrevClick}
-          >
-            <ChevronLeftIcon />
-          </IconButton>
-          <IconButton
-            sx={{ height: "40px", width: "40px" }}
-            onClick={onNextClick}
-          >
-            <ChevronRightIcon />
-          </IconButton>
+          <Box sx={{ display: "flex", marginX: 2 }}>
+            <IconButton
+              sx={{ height: "40px", width: "40px" }}
+              onClick={onPrevClick}
+            >
+              <ChevronLeftIcon />
+            </IconButton>
+            <IconButton
+              sx={{ height: "40px", width: "40px" }}
+              onClick={onNextClick}
+            >
+              <ChevronRightIcon />
+            </IconButton>
+          </Box>
         </Box>
         <Box
           sx={{
