@@ -1,5 +1,5 @@
 /* eslint-disable no-use-before-define */
-import { makeStyles } from "@material-ui/core/styles";
+import AddIcon from "@mui/icons-material/Add";
 import {
   Autocomplete,
   ListItem,
@@ -7,19 +7,20 @@ import {
   TextField,
   createFilterOptions,
 } from "@mui/material";
-import { id } from "date-fns/locale";
-import React, { useState } from "react";
+import React from "react";
 import { Controller } from "react-hook-form";
-import AddIcon from "@mui/icons-material/Add";
 
-export const FormAutoComplete = ({ name, control, label, options }) => {
-  const [value, setValue] = useState(options[0].Nummer);
-  const [inputValue, setInputValue] = useState("");
-
+export const FormAutoComplete = ({
+  name,
+  control,
+  label,
+  options,
+  disabled,
+}) => {
   const filter = createFilterOptions();
   const labelNewCustomer = "Add new customer";
   const isRegularItem = (label) => {
-    return label != labelNewCustomer;
+    return label !== labelNewCustomer;
   };
   const colorOfNewCustomer = (label) => {
     if (!isRegularItem(label)) return "#0000ff";
@@ -40,6 +41,7 @@ export const FormAutoComplete = ({ name, control, label, options }) => {
           freeSolo
           value={value || null}
           options={options}
+          disabled={disabled}
           getOptionLabel={(option) => {
             return option.Nachname + ", " + option.Vorname;
           }}

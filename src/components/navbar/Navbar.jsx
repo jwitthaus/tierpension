@@ -18,7 +18,6 @@ import { useNavigate } from "react-router-dom";
 import NavTabs from "./NavTabs";
 import BookingDetails from "../BookingDetails/BookingDetails";
 
-const drawerWidth = 240;
 const navItems = ["Bookings", "Calendar", "Billing"];
 
 function Navbar(props) {

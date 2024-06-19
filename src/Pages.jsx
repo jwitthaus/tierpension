@@ -2,7 +2,7 @@ import Toolbar from "@mui/material/Toolbar";
 import axios from "axios";
 import { format } from "date-fns";
 import React, { useContext, useEffect, useState } from "react";
-import { QueryClient, useQuery } from "react-query";
+import { useQuery } from "react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { FilterContext } from "./components/Bookings/Toolbar/FilterProvider";
 import Navbar from "./components/Navbar/Navbar";
@@ -11,20 +11,28 @@ import Bookings from "./pages/Bookings";
 import CalendarPage from "./pages/CalendarPage";
 import ErrorPage from "./pages/ErrorPage";
 
-const queryClient = new QueryClient();
-
 export default function Pages(props) {
-  const [bookings, setBookings] = useState([]);
+  const [groupedBookings, setGroupedBookings] = useState([]);
   const { searchTerm } = useContext(FilterContext);
 
-  const { isLoading, data } = useQuery(
-    ["bookings-with-customers", searchTerm],
-    () => {
-      return axios.get(
-        `http://localhost:8081/bookingsWithCustomers?search=${searchTerm}`
-      );
-    }
-  );
+  const [holidayData, setHolidayData] = useState([]);
+  useEffect(() => {
+    const fetchAllHolidays = async () => {
+      try {
+        const res = await axios.get("http://localhost:8081/holidays");
+        setHolidayData(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchAllHolidays();
+  }, []);
+
+  const { data } = useQuery(["bookings-with-customers", searchTerm], () => {
+    return axios.get(
+      `http://localhost:8081/bookingsWithCustomers?search=${searchTerm}`
+    );
+  });
 
   const groupBookings = (input) => {
     //statt bookings hier im code zu gruppieren, Vorschlag von Papa:
@@ -57,7 +65,7 @@ export default function Pages(props) {
   useEffect(() => {
     if (data) {
       const groupData = groupBookings(data.data);
-      setBookings(groupData);
+      setGroupedBookings(groupData);
     }
   }, [data]);
 
@@ -67,11 +75,14 @@ export default function Pages(props) {
         <Navbar />
         <Toolbar />
         <Routes>
-          <Route index element={<Bookings />} />
-          <Route path="/bookings" element={<Bookings data={bookings} />} />
+          <Route index element={<Bookings data={groupedBookings} />} />
+          <Route
+            path="/bookings"
+            element={<Bookings data={groupedBookings} />}
+          />
           <Route
             path="/calendar"
-            element={<CalendarPage data={data?.data} />}
+            element={<CalendarPage data={data?.data} holidays={holidayData} />}
           />
           <Route path="/billing" element={<Billing />} />
           <Route path="*" element={<ErrorPage />} />

@@ -1,9 +1,7 @@
 import { Box, Paper } from "@mui/material";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { addDays, differenceInCalendarDays, format } from "date-fns";
-import { animate } from "framer-motion";
-import React, { useContext, useEffect, useRef } from "react";
-import { Context } from "../../../pages/Bookings";
+import React, { useRef } from "react";
 import styles from "./Capacity.module.css";
 
 const CustomItemTooltipContent = (props) => {
@@ -36,17 +34,9 @@ export default function Capacity(props) {
   console.log("red: " + redBar);
   console.log("green: " + greenBar);*/
 
-  const timelineLength = differenceInCalendarDays(
-    props.timelineEnd,
-    props.timelineStart
-  );
   const capacityRef = useRef(null);
 
-  const [colors, setcolorBookings] = React.useState([
-    "#f4f4f4",
-    "#87EA32",
-    "#FE5019",
-  ]);
+  const [colors] = React.useState(["#f4f4f4", "#87EA32", "#FE5019"]);
   return (
     <Box
       ref={capacityRef}

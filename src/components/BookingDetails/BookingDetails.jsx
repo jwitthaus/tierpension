@@ -1,20 +1,19 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button, useMediaQuery, useTheme } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import axios from "axios";
+import { format, getHours, getMinutes, setHours, setMinutes } from "date-fns";
 import "dayjs/locale/de";
 import React, { Fragment, useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import Capacity from "../Bookings/Capacity/Capacity";
-import { FormInputDate } from "./FormInputDate";
-import { FormInputText } from "./FormInputText";
-import { FormAutoComplete } from "./FormAutoComplete";
-import { format, getHours, getMinutes, setHours, setMinutes } from "date-fns";
 import { useQueryClient } from "react-query";
-import { FormInputTime } from "./FormInputTime";
-import { FormInputDuration } from "./FormInputDuration";
+import { FormAutoComplete } from "../BasicControls/FormAutoComplete";
+import { FormInputDate } from "../BasicControls/FormInputDate";
+import { FormInputDuration } from "../BasicControls/FormInputDuration";
+import { FormInputText } from "../BasicControls/FormInputText";
+import { FormInputTime } from "../BasicControls/FormInputTime";
 
 const startTime = new Date();
 startTime.setHours(13);
@@ -42,7 +41,7 @@ const defaultValues = {
   Tier_ID: 5,
 };
 
-const BookingDetails = ({ visible, callbackClose, selectedBookingData }) => {
+const BookingDetails = ({ visible, callbackClose, selectedBooking }) => {
   const queryClient = useQueryClient();
 
   const [customerList, setCustomerList] = useState([]);
@@ -58,27 +57,27 @@ const BookingDetails = ({ visible, callbackClose, selectedBookingData }) => {
     fetchAllCustomers();
   }, []);
 
-  const { handleSubmit, watch, reset, control, setValue } = useForm({
+  const { handleSubmit, reset, control, setValue } = useForm({
     defaultValues: defaultValues,
   });
 
   //wenn dieses Formular geöffnet wird, weil eine vorhandene Buchung selektiert wird,
   //dann sollen alle Details der Buchung in die Felder übernommen werden
   useEffect(() => {
-    if (selectedBookingData) {
+    if (selectedBooking) {
       const selectedCustomer = customerList.find(
-        (customer) => customer.Nummer === selectedBookingData.Kunden_ID
+        (customer) => customer.Nummer === selectedBooking.Kunden_ID
       );
       setValue("Kunden_ID", selectedCustomer || null);
-      setValue("Beginn_Datum", new Date(selectedBookingData.Beginn_Datum));
-      setValue("Beginn_Start", new Date(selectedBookingData.Beginn_Start));
-      setValue("Beginn_Zeitraum", selectedBookingData.Beginn_Zeitraum);
-      setValue("Ende_Datum", new Date(selectedBookingData.Ende_Datum));
-      setValue("Ende_Start", new Date(selectedBookingData.Ende_Start));
-      setValue("Ende_Zeitraum", selectedBookingData.Ende_Zeitraum);
-      setValue("Tier_ID", selectedBookingData.Tier_ID);
+      setValue("Beginn_Datum", new Date(selectedBooking.Beginn_Datum));
+      setValue("Beginn_Start", new Date(selectedBooking.Beginn_Start));
+      setValue("Beginn_Zeitraum", selectedBooking.Beginn_Zeitraum);
+      setValue("Ende_Datum", new Date(selectedBooking.Ende_Datum));
+      setValue("Ende_Start", new Date(selectedBooking.Ende_Start));
+      setValue("Ende_Zeitraum", selectedBooking.Ende_Zeitraum);
+      setValue("Tier_ID", selectedBooking.Tier_ID);
     }
-  }, [selectedBookingData, setValue, customerList]);
+  }, [selectedBooking, setValue, customerList]);
 
   const watchDates = useWatch({
     control,
@@ -135,14 +134,19 @@ const BookingDetails = ({ visible, callbackClose, selectedBookingData }) => {
   };
 
   const handleClose = () => {
-    reset();
+    reset(defaultValues);
     callbackClose();
   };
 
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
   return (
     <Fragment>
-      <Dialog open={visible} onClose={handleClose}>
-        <DialogTitle>New Booking</DialogTitle>
+      <Dialog open={visible} onClose={handleClose} fullScreen={fullScreen}>
+        <DialogTitle>
+          {selectedBooking ? "Edit Booking" : "New Booking"}
+        </DialogTitle>
         <DialogContent>
           <Box
             sx={{
@@ -152,12 +156,13 @@ const BookingDetails = ({ visible, callbackClose, selectedBookingData }) => {
               marginTop: 1,
             }}
           >
-            {watchCustomerSelection != -1 ? (
+            {watchCustomerSelection !== -1 ? (
               <FormAutoComplete
                 name="Kunden_ID"
                 control={control}
                 label="Search customer"
                 options={customerList}
+                disabled={!!selectedBooking} // Disable if selectedBooking exists
               />
             ) : (
               <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
@@ -218,9 +223,13 @@ const BookingDetails = ({ visible, callbackClose, selectedBookingData }) => {
             </Box>
           </Box>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit(onSubmit)}>Book</Button>
+        <DialogActions sx={{ marginX: 2, marginBottom: 2 }}>
+          <Button variant="outlined" onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button variant="contained" onClick={handleSubmit(onSubmit)}>
+            {selectedBooking ? "Save" : "Book"}
+          </Button>
         </DialogActions>
       </Dialog>
     </Fragment>

@@ -2,13 +2,9 @@ import React from "react";
 
 import { Box } from "@mui/material";
 import { addDays, differenceInCalendarDays } from "date-fns";
+import { useRef } from "react";
 import DateBarColumn from "./DateBarColumn";
 import styles from "./Timeline.module.css";
-import { useRef } from "react";
-import { useContext } from "react";
-import { Context } from "../../../pages/Bookings";
-import { animate } from "framer-motion";
-import { useEffect } from "react";
 
 export default function DateBar(props) {
   const timelineLength = differenceInCalendarDays(

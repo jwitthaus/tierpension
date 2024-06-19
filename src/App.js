@@ -1,7 +1,6 @@
 import { CssBaseline } from "@mui/material";
 import React from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { BrowserRouter } from "react-router-dom";
 import Pages from "./Pages";
 import { FilterProvider } from "./components/Bookings/Toolbar/FilterProvider";
 import { TimelineSettingsProvider } from "./components/Bookings/Toolbar/TimelineSettingsProvider";

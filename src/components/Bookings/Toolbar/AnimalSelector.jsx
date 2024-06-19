@@ -13,7 +13,6 @@ export default function AnimalSelector() {
 
   return (
     <ToggleButtonGroup
-      color="primary"
       value={alignment}
       exclusive
       onChange={handleChange}

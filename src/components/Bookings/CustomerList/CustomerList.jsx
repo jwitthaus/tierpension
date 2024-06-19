@@ -1,9 +1,8 @@
 import { Box, ListSubheader } from "@mui/material";
 import List from "@mui/material/List";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import BookingListItem from "../../BasicControls/BookingListItem";
 import styles from "./CustomerList.module.css";
-import axios from "axios";
 
 export default function CustomerList(props) {
   return (

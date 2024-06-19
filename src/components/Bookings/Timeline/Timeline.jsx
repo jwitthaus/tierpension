@@ -2,14 +2,13 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
-import { addDays, differenceInCalendarDays, format, parseISO } from "date-fns";
+import axios from "axios";
+import { addDays, differenceInCalendarDays } from "date-fns";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { animate, motion } from "framer-motion";
+import { useQuery, useQueryClient } from "react-query";
+import BookingDetails from "../../BookingDetails/BookingDetails";
 import BackgroundColumn from "./BackgroundColumn";
 import styles from "./Timeline.module.css";
-import BookingDetails from "../../BookingDetails/BookingDetails";
-import axios from "axios";
-import { useQuery, useQueryClient } from "react-query";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -33,7 +32,7 @@ export default function Timeline(props) {
   const [bookingDetailsOpen, setBookingDetailsOpen] = useState(false);
   const queryClient = useQueryClient();
 
-  const { data, isLoading, error } = useQuery(
+  const { data } = useQuery(
     ["booking", selectedBooking],
     () => fetchBookingData(selectedBooking),
     {
@@ -42,9 +41,9 @@ export default function Timeline(props) {
   );
 
   const handleBookingClose = useCallback(() => {
-    setBookingDetailsOpen(false);
     setSelectedBooking(null);
-    queryClient.invalidateQueries(["booking", selectedBooking]); // Ungültig machen der Query, um sicherzustellen, dass die Daten beim nächsten Mal neu geladen werden
+    setBookingDetailsOpen(false);
+    queryClient.invalidateQueries(["booking", selectedBooking]);
   }, [queryClient, selectedBooking]);
 
   useEffect(() => {
@@ -78,7 +77,7 @@ export default function Timeline(props) {
         ))}
       </div>
       <Grid container columns={timelineLength} className={styles.gantt}>
-        {props.data.map((category, i) => (
+        {props.data?.map((category, i) => (
           <React.Fragment key={i}>
             <Grid
               item
@@ -154,7 +153,7 @@ export default function Timeline(props) {
       <BookingDetails
         visible={bookingDetailsOpen}
         callbackClose={handleBookingClose}
-        selectedBookingData={data?.[0]}
+        selectedBooking={data?.[0]}
       />
     </Box>
   );

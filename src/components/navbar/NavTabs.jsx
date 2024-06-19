@@ -50,7 +50,7 @@ function a11yProps(index) {
 
 export default function NavTabs() {
   const navigate = useNavigate();
-  const [data, setData] = useState(["Bookings", "Calendar", "Billing"]);
+  const [data] = useState(["Bookings", "Calendar", "Billing"]);
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue, label) => {

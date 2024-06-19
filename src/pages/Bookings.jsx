@@ -1,4 +1,4 @@
-import { addDays, differenceInCalendarDays, format, subDays } from "date-fns";
+import { addDays, differenceInCalendarDays, subDays } from "date-fns";
 import { animate } from "framer-motion";
 import React, {
   useCallback,
@@ -7,20 +7,16 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { useQuery, useQueryClient } from "react-query";
 import Capacity from "../components/Bookings/Capacity/Capacity";
 import CustomerList from "../components/Bookings/CustomerList/CustomerList";
 import DateBar from "../components/Bookings/Timeline/DateBar";
 import Timeline from "../components/Bookings/Timeline/Timeline";
 import BookingsToolBar from "../components/Bookings/Toolbar/BookingsToolBar";
-import { FilterContext } from "../components/Bookings/Toolbar/FilterProvider.jsx";
 import { TimelineSettingsContext } from "../components/Bookings/Toolbar/TimelineSettingsProvider.jsx";
 import styles from "./Bookings.module.css";
 
 export default function Bookings(props) {
   const { visibleDays } = useContext(TimelineSettingsContext);
-
-  const queryClient = useQueryClient();
 
   //Tage errechnen sich aus Tag der Rückgabe der spätesten Buchung - heutiges Datum (in Tagen)
   //--> vorausgesetzt man kann nicht in die Vergangenheit scrollen
@@ -72,22 +68,25 @@ export default function Bookings(props) {
         //console.log("scroll: " + latest);
       },
     });
-  }, [visibleDays]);
+  }, [visibleDays, timelineLength, lastTimelineScale]);
 
   const handleScrollTimeline = (scroll) => {
     capacityRef.current.scrollLeft = scroll.target.scrollLeft;
   };
 
-  const scrollToDateCallback = useCallback((date) => {
-    let difference = differenceInCalendarDays(date, timelineStart);
-    let scrollPosition =
-      (difference * timelineRef.current?.offsetWidth) / visibleDays;
-    animate(timelineRef.current.scrollLeft, scrollPosition, {
-      ease: "linear",
-      onUpdate: (latest) => (timelineRef.current.scrollLeft = latest),
-    });
-    //timelineRef.current.scrollLeft = scrollPosition;
-  }, []);
+  const scrollToDateCallback = useCallback(
+    (date) => {
+      let difference = differenceInCalendarDays(date, timelineStart);
+      let scrollPosition =
+        (difference * timelineRef.current?.offsetWidth) / visibleDays;
+      animate(timelineRef.current.scrollLeft, scrollPosition, {
+        ease: "linear",
+        onUpdate: (latest) => (timelineRef.current.scrollLeft = latest),
+      });
+      //timelineRef.current.scrollLeft = scrollPosition;
+    },
+    [timelineStart, visibleDays]
+  );
   return (
     <>
       <div className={styles.bookings}>
@@ -100,20 +99,20 @@ export default function Bookings(props) {
               timelineScale={timelineScale}
               timelineStart={timelineStart}
               timelineEnd={timelineEnd}
-              data={props.data}
+              data={props?.data}
             />
             <DateBar
               timelineScale={timelineScale}
               timelineStart={timelineStart}
               timelineEnd={timelineEnd}
-              data={props.data}
+              data={props?.data}
             />
           </div>
         </div>
         <div className={styles.bottomarea}>
           <div className={styles.customerList}>
             <CustomerList
-              data={props.data}
+              data={props?.data}
               scrollToDateCallback={scrollToDateCallback}
             />
           </div>
@@ -127,7 +126,7 @@ export default function Bookings(props) {
               timelineStart={timelineStart}
               timelineEnd={timelineEnd}
               timelineScale={timelineScale}
-              data={props.data}
+              data={props?.data}
               scrollToDateCallback={scrollToDateCallback}
             />
           </div>
