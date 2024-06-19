@@ -84,6 +84,10 @@ const CalendarPage = (props) => {
     }
   }, [view, date]);
 
+  const onTodayClick = useCallback(() => {
+    setDate(new Date());
+  }, []);
+
   const dateText = useMemo(() => {
     if (view === Views.DAY) return format(date, "iiii, MMMM dd");
     if (view === Views.WEEK) {
@@ -141,7 +145,11 @@ const CalendarPage = (props) => {
             flex: 1,
           }}
         >
-          <Button variant="outlined" sx={{ paddingY: 1 }}>
+          <Button
+            variant="outlined"
+            sx={{ paddingY: 1 }}
+            onClick={onTodayClick}
+          >
             today
           </Button>
           <IconButton
