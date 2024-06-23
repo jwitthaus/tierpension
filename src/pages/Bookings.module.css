@@ -31,7 +31,7 @@
 
 .customerList {
   width: 299px;
-  padding-top: 33px;
+  padding-top: 38px;
 }
 
 .timeline {
@@ -39,6 +39,7 @@
 
   width: inherit;
   overflow-x: scroll;
+  overflow-y: hide;
   background-color: #f4f4f4;
 }
 

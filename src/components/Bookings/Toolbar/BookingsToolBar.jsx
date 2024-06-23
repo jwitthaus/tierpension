@@ -1,15 +1,20 @@
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import FilterListIcon from "@mui/icons-material/FilterList";
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, Button, ButtonGroup, IconButton } from "@mui/material";
 import React, { useCallback, useContext } from "react";
+import { TimelineSettingsContext } from "../Timeline/TimelineSettingsProvider";
 import styles from "./BookingsToolBar.module.css";
 import FilterPanel from "./FilterPanel";
 import Searchbar from "./Searchbar";
-import { TimelineSettingsContext } from "./TimelineSettingsProvider";
+
+const VIEW_OPTIONS = [
+  { id: 31, label: "Month" },
+  { id: 7, label: "Week" },
+  { id: 1, label: "Day" },
+];
 
 const BookingsToolBar = () => {
   const [filterOpen, setFilterOpen] = React.useState(false);
-  const { setVisibleDays } = useContext(TimelineSettingsContext);
+  const { visibleDays, setVisibleDays } = useContext(TimelineSettingsContext);
 
   const handleFilterOpen = () => {
     setFilterOpen(true);
@@ -23,48 +28,26 @@ const BookingsToolBar = () => {
     <div className={styles.toolbar}>
       <Box className={styles.filterButtons}>
         <Box>
-          <IconButton
-            sx={{
-              position: "relative",
-              fontSize: "14px",
-              fontWeight: "bold",
-            }}
-            aria-label="filter"
-            onClick={() => setVisibleDays(7)}
-          >
-            <CalendarTodayIcon />
-            <Typography
-              sx={{
-                position: "absolute",
-                fontSize: "x-small",
-                fontWeight: "700",
-                paddingTop: "4px",
-              }}
-            >
-              7
-            </Typography>
-          </IconButton>
-          <IconButton
-            sx={{
-              position: "relative",
-              fontSize: "14px",
-              fontWeight: "bold",
-            }}
-            aria-label="filter"
-            onClick={() => setVisibleDays(31)}
-          >
-            <CalendarTodayIcon />
-            <Typography
-              sx={{
-                position: "absolute",
-                fontSize: "x-small",
-                fontWeight: "700",
-                paddingTop: "4px",
-              }}
-            >
-              31
-            </Typography>
-          </IconButton>
+          <ButtonGroup gap={0} spacing={0} isattached="true">
+            {VIEW_OPTIONS.map(({ id, label }) => (
+              <Button
+                key={id}
+                onClick={() => setVisibleDays(id)}
+                sx={
+                  id === visibleDays
+                    ? {
+                        backgroundColor: "#EDF6FF",
+                        "&:hover": {
+                          backgroundColor: "#D7E6F3",
+                        },
+                      }
+                    : {}
+                }
+              >
+                {label}
+              </Button>
+            ))}
+          </ButtonGroup>
         </Box>
 
         <IconButton aria-label="filter" onClick={handleFilterOpen}>

@@ -1,19 +1,23 @@
+.barChart {
+  position: relative;
+  /*height: 100%;*/
+  display: flex; /* oder grid */
+  flex-direction: column; /* oder grid-template-columns: 1fr */
+  z-index: 2; /* Place it in front of the background columns */
+  padding-top: 34px;
+}
+
+.barChartContainer {
+  /*width: 100%;*/
+  /*overflow-x: scroll; */ /* Enable horizontal scrolling */
+  white-space: nowrap; /* Prevents line breaks for the bars */
+  position: relative;
+}
+
 .dayColumns {
   display: flex;
   width: 100%;
   height: 100%;
   justify-content: space-around;
   position: absolute;
-  overflow-x: hidden;
-}
-
-.gantt {
-  position: absolute;
-  padding-top: 33px;
-}
-
-.container {
-  position: relative;
-  height: 100%;
-  overflow-y: hidden;
 }

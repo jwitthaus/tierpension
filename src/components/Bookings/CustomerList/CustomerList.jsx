@@ -1,10 +1,12 @@
 import { Box, ListSubheader } from "@mui/material";
 import List from "@mui/material/List";
-import React from "react";
+import React, { useContext } from "react";
 import BookingListItem from "../../BasicControls/BookingListItem";
 import styles from "./CustomerList.module.css";
+import { TimelineSettingsContext } from "../Timeline/TimelineSettingsProvider";
 
 export default function CustomerList(props) {
+  const { groupedBookings } = useContext(TimelineSettingsContext);
   return (
     <Box>
       <List
@@ -15,7 +17,7 @@ export default function CustomerList(props) {
         }}
         subheader={<li />}
       >
-        {props.data.map((sectionId) => (
+        {groupedBookings.map((sectionId) => (
           <li key={sectionId.title}>
             <ul>
               <ListSubheader

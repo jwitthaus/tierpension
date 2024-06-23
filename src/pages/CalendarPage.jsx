@@ -21,12 +21,13 @@ import {
   subWeeks,
 } from "date-fns";
 import { de } from "date-fns/locale";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useContext, useMemo, useState } from "react";
 import { Calendar, Views, dateFnsLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import { TimelineSettingsContext } from "../components/Bookings/Timeline/TimelineSettingsProvider";
 
 const locales = {
   de: de,
@@ -61,6 +62,8 @@ const VIEW_OPTIONS = [
 ];
 
 const CalendarPage = (props) => {
+  const { bookings } = useContext(TimelineSettingsContext);
+
   const [view, setView] = useState(Views.WEEK);
   const [date, setDate] = useState(new Date());
 
@@ -105,7 +108,7 @@ const CalendarPage = (props) => {
     }
   }, [view, date]);
 
-  const appointments = (props.data ?? []).flatMap((event) => [
+  const appointments = (bookings ?? []).flatMap((event) => [
     {
       id: `${event.LfdNr}_start`,
       start: new Date(event.Beginn_Start),

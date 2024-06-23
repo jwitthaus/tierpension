@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const StyledTab = styled(Tab)({
   color: "#C5E0F9",
@@ -50,8 +50,17 @@ function a11yProps(index) {
 
 export default function NavTabs() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [data] = useState(["Bookings", "Calendar", "Billing"]);
-  const [value, setValue] = React.useState(0);
+
+  // Get initial tab value from URL
+  const getInitialTabValue = () => {
+    const path = location.pathname.substring(1);
+    const index = data.indexOf(path.charAt(0).toUpperCase() + path.slice(1));
+    return index === -1 ? 0 : index;
+  };
+
+  const [value, setValue] = useState(getInitialTabValue);
 
   const handleChange = (event, newValue, label) => {
     setValue(newValue);

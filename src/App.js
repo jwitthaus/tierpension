@@ -1,9 +1,9 @@
 import { CssBaseline } from "@mui/material";
 import React from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import Pages from "./Pages";
+import Pages from "./pages/Pages";
 import { FilterProvider } from "./components/Bookings/Toolbar/FilterProvider";
-import { TimelineSettingsProvider } from "./components/Bookings/Toolbar/TimelineSettingsProvider";
+import { TimelineSettingsProvider } from "./components/Bookings/Timeline/TimelineSettingsProvider";
 
 const queryClient = new QueryClient();
 

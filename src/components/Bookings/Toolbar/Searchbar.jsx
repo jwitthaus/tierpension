@@ -30,9 +30,6 @@ const Searchbar = () => {
           variant="outlined"
           onChange={handleChange}
           InputProps={{
-            style: {
-              borderRadius: "12px",
-            },
             startAdornment: (
               <InputAdornment position="start">
                 <SearchIcon />

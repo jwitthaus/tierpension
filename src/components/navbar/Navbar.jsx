@@ -101,7 +101,6 @@ function Navbar(props) {
               "&:hover": {
                 backgroundColor: "#E3C274",
               },
-              borderRadius: "12px",
               width: "150px",
               minWidth: "150px",
             }}

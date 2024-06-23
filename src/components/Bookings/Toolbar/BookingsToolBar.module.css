@@ -1,8 +1,6 @@
 .filterButtons {
   display: flex;
   justify-content: space-between;
-  margin-left: 16px;
-  margin-right: 16px;
   margin-bottom: 8px;
 }
 

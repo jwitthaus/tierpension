@@ -1,0 +1,10 @@
+.bar {
+  position: relative;
+  height: 40px;
+  transition: width 0.3s, left 0.3s; /* Add transition for smooth resizing */
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 16px;
+}

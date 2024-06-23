@@ -1,7 +1,8 @@
 import { Box, Paper } from "@mui/material";
 import { BarChart } from "@mui/x-charts/BarChart";
-import { addDays, differenceInCalendarDays, format } from "date-fns";
-import React, { useRef } from "react";
+import { addDays, format } from "date-fns";
+import React, { useContext, useRef } from "react";
+import { TimelineSettingsContext } from "../Timeline/TimelineSettingsProvider";
 import styles from "./Capacity.module.css";
 
 const CustomItemTooltipContent = (props) => {
@@ -14,7 +15,11 @@ const CustomItemTooltipContent = (props) => {
   );
 };
 
-export default function Capacity(props) {
+export default function Capacity() {
+  const { timelineLength, timelineStart, timelineScale } = useContext(
+    TimelineSettingsContext
+  );
+
   const capacity = [6, 6, 6, 6, 6, 6];
   const bookings = [5, 6, 7, 8, 4, 3];
   /*const capacity = [
@@ -41,7 +46,7 @@ export default function Capacity(props) {
     <Box
       ref={capacityRef}
       className={styles.capacity}
-      sx={{ width: `${props.timelineScale}%` }}
+      sx={{ width: `${timelineScale}%` }}
     >
       <BarChart
         margin={{ top: 0, left: 0, right: 0, bottom: 0 }}
@@ -50,12 +55,8 @@ export default function Capacity(props) {
         tooltip={{ trigger: "item" }}
         xAxis={[
           {
-            data: [
-              ...Array(
-                differenceInCalendarDays(props.timelineEnd, props.timelineStart)
-              ),
-            ].map((d, i) =>
-              format(addDays(props.timelineStart, i), "d. MMMM yy")
+            data: [...Array(timelineLength)].map((d, i) =>
+              format(addDays(timelineStart, i), "d. MMMM yy")
             ),
             scaleType: "band",
           },
