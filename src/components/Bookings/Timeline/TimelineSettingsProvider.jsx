@@ -25,7 +25,7 @@ export const TimelineSettingsProvider = ({ children }) => {
     subDays(today, offsetBeforeToday)
   ); //to be configurable from config file or database
   const [timelineLength, setTimelineLength] = useState(
-    5 + emptyOffsetAtTimelineEnd + offsetBeforeToday + 1 //+1 because of today
+    64 + emptyOffsetAtTimelineEnd + offsetBeforeToday + 1 //+1 because of today
   );
   const [timelineEnd, setTimelineEnd] = useState(
     addDays(timelineStart, timelineLength)

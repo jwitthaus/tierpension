@@ -15,11 +15,30 @@ import styles from "./Capacity.module.css";
 import { CapacityContext } from "./CapacityProvider";
 
 const CustomItemTooltipContent = (props) => {
-  const { itemData, series } = props;
+  const { dataIndex, series, axisValue } = props;
+  const grey = series[0].data[dataIndex];
+  const green = series[1].data[dataIndex];
+  const red = series[2].data[dataIndex];
+  const isOverbooked = red > 0;
+  const overOrUnderBooked = isOverbooked ? "overbooked" : "free capacity";
+  const style = {
+    color: `${isOverbooked ? "#FE5019" : "#87EA32"}`,
+  };
   return (
-    <Paper sx={{ padding: 3, backgroundColor: series.color }}>
-      <p>{series.label}</p>
-      <p>{series.data[itemData.dataIndex]}</p>
+    <Paper elevation={3} sx={{ overflow: "hidden" }}>
+      <div className={styles.popoverHeader}>
+        <p>{format(axisValue, "do LLLL yy")}</p>
+      </div>
+      <div className={styles.bookingContainer}>
+        <div className={styles.booking}>
+          <p>bookings</p>
+          <p>{grey + red}</p>
+        </div>
+        <div className={styles.booking} style={style}>
+          <p>{overOrUnderBooked}</p>
+          <p>{isOverbooked ? red : green}</p>
+        </div>
+      </div>
     </Paper>
   );
 };
@@ -87,10 +106,11 @@ export default function Capacity({ startDate, endDate, scale }) {
       sx={{ width: `${scale}%` }}
     >
       <BarChart
+        skipAnimation={true}
         margin={{ top: 0, left: 0, right: 0, bottom: 0 }}
         colors={colors}
         //tooltip={{ trigger: "item", itemContent: CustomItemTooltipContent }}
-        tooltip={{ trigger: "item" }}
+        tooltip={{ trigger: "axis", axisContent: CustomItemTooltipContent }}
         xAxis={[
           {
             data: [...Array(capacityLength)].map((d, i) =>
@@ -121,9 +141,6 @@ export default function Capacity({ startDate, endDate, scale }) {
         leftAxis={null}
         bottomAxis={null}
         slotProps={{ legend: { hidden: true } }}
-        slots={{
-          itemContent: CustomItemTooltipContent,
-        }}
       />
     </Box>
   );
