@@ -1,9 +1,18 @@
 import { Box, Paper } from "@mui/material";
 import { BarChart } from "@mui/x-charts/BarChart";
-import { addDays, format } from "date-fns";
-import React, { useContext, useRef } from "react";
+import {
+  addDays,
+  endOfDay,
+  startOfDay,
+  subDays,
+  differenceInCalendarDays,
+  format,
+  isWithinInterval,
+} from "date-fns";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { TimelineSettingsContext } from "../Timeline/TimelineSettingsProvider";
 import styles from "./Capacity.module.css";
+import { CapacityContext } from "./CapacityProvider";
 
 const CustomItemTooltipContent = (props) => {
   const { itemData, series } = props;
@@ -15,29 +24,58 @@ const CustomItemTooltipContent = (props) => {
   );
 };
 
-export default function Capacity() {
-  const { timelineLength, timelineStart, timelineScale } = useContext(
-    TimelineSettingsContext
+export default function Capacity({ startDate, endDate, scale }) {
+  const { bookings } = useContext(TimelineSettingsContext);
+  const [capacityLength, setCapacityLength] = useState(
+    differenceInCalendarDays(endDate, startDate)
   );
 
-  const capacity = [6, 6, 6, 6, 6, 6];
-  const bookings = [5, 6, 7, 8, 4, 3];
-  /*const capacity = [
-    ...Array(differenceInCalendarDays(props.timelineEnd, props.timelineStart)),
-  ].map((d, i) => 6);
+  const getCapacityData = () => {
+    const bookingCountData = [];
+    const capacityCountData = [];
 
-  const bookings = [
-    ...Array(differenceInCalendarDays(props.timelineEnd, props.timelineStart)),
-  ].map((d, i) => Math.floor(Math.random() * (8 - 3 + 1)) + 3);*/
+    for (let i = 0; i < capacityLength; i++) {
+      let bookingCounter = 0;
+      bookings?.forEach((booking) => {
+        const day = addDays(startDate, i);
+        const bookingStart = startOfDay(new Date(booking.Beginn_Datum));
+        const bookingEnd = endOfDay(new Date(booking.Ende_Datum)); //+1 because a booking starting and ending at the same day has length of 1
+
+        //ich muss hier mit aufpassen mit den Uhrzeiten
+        //--> welche Uhrzeit hat date?
+        //Liegt die auf jeden Fall immer dazwischen?
+        if (isWithinInterval(day, { start: bookingStart, end: bookingEnd })) {
+          bookingCounter++;
+        }
+      });
+      let capacityCounter = 5;
+
+      bookingCountData.push(bookingCounter);
+      capacityCountData.push(capacityCounter);
+    }
+
+    return { bookingCountData, capacityCountData };
+  };
+  const { capacityCountData, bookingCountData } = getCapacityData(
+    startDate,
+    endDate
+  );
+
+  useEffect(() => {
+    setCapacityLength(differenceInCalendarDays(endDate, startDate));
+  }, [startDate, endDate]);
 
   const greyBar = [
-    ...capacity.map((d, i) => (d < bookings[i] ? d : bookings[i])),
+    ...capacityCountData.map((d, i) =>
+      d < bookingCountData[i] ? d : bookingCountData[i]
+    ),
   ];
-  const greenBar = [...capacity.map((d, i) => Math.max(0, d - bookings[i]))];
-  const redBar = [...capacity.map((d, i) => Math.max(0, bookings[i] - d))];
-  /*console.log("grey: " + greyBar);
-  console.log("red: " + redBar);
-  console.log("green: " + greenBar);*/
+  const greenBar = [
+    ...capacityCountData.map((d, i) => Math.max(0, d - bookingCountData[i])),
+  ];
+  const redBar = [
+    ...capacityCountData.map((d, i) => Math.max(0, bookingCountData[i] - d)),
+  ];
 
   const capacityRef = useRef(null);
 
@@ -46,7 +84,7 @@ export default function Capacity() {
     <Box
       ref={capacityRef}
       className={styles.capacity}
-      sx={{ width: `${timelineScale}%` }}
+      sx={{ width: `${scale}%` }}
     >
       <BarChart
         margin={{ top: 0, left: 0, right: 0, bottom: 0 }}
@@ -55,8 +93,8 @@ export default function Capacity() {
         tooltip={{ trigger: "item" }}
         xAxis={[
           {
-            data: [...Array(timelineLength)].map((d, i) =>
-              format(addDays(timelineStart, i), "d. MMMM yy")
+            data: [...Array(capacityLength)].map((d, i) =>
+              format(addDays(startDate, i), "d. MMMM yy")
             ),
             scaleType: "band",
           },

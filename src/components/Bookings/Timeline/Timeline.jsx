@@ -39,7 +39,6 @@ const Timeline = () => {
 
   useEffect(() => {
     if (selectedBooking) {
-      console.log(selectedBooking);
     }
   }, [selectedBooking]);
 

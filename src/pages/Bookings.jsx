@@ -5,14 +5,18 @@ import Timeline from "../components/Bookings/Timeline/Timeline.jsx";
 import { TimelineSettingsContext } from "../components/Bookings/Timeline/TimelineSettingsProvider.jsx";
 import BookingsToolBar from "../components/Bookings/Toolbar/BookingsToolBar";
 import styles from "./Bookings.module.css";
+import { addDays, subDays } from "date-fns";
 
 export default function Bookings() {
   const {
     timelineScale,
     prevTimelineScale,
     timelineStart,
+    timelineEnd,
     calculatePercentage,
   } = useContext(TimelineSettingsContext);
+
+  console.log(timelineStart + " " + timelineEnd);
 
   const capacityRef = useRef(null);
   const timelineRef = useRef(null);
@@ -73,7 +77,11 @@ export default function Bookings() {
             <BookingsToolBar />
           </div>
           <div ref={capacityRef} className={styles.capacity}>
-            <Capacity />
+            <Capacity
+              startDate={timelineStart}
+              endDate={timelineEnd}
+              scale={timelineScale}
+            />
           </div>
         </div>
         <div className={styles.bottomarea}>

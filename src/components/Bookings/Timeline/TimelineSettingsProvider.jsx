@@ -25,7 +25,7 @@ export const TimelineSettingsProvider = ({ children }) => {
     subDays(today, offsetBeforeToday)
   ); //to be configurable from config file or database
   const [timelineLength, setTimelineLength] = useState(
-    64 + emptyOffsetAtTimelineEnd + offsetBeforeToday
+    5 + emptyOffsetAtTimelineEnd + offsetBeforeToday + 1 //+1 because of today
   );
   const [timelineEnd, setTimelineEnd] = useState(
     addDays(timelineStart, timelineLength)
@@ -38,7 +38,7 @@ export const TimelineSettingsProvider = ({ children }) => {
   const [groupedBookings, setGroupedBookings] = useState([]);
   const [selectedBooking, setSelectedBooking] = useState(null);
 
-  const dates = Array.from({ length: timelineLength + 1 }, (_, i) =>
+  const dates = Array.from({ length: timelineLength }, (_, i) =>
     addDays(timelineStart, i)
   );
 
@@ -91,6 +91,7 @@ export const TimelineSettingsProvider = ({ children }) => {
 
   useEffect(() => {
     if (data) {
+      setBookings(data.data);
       const groupData = groupBookings(data.data);
       setGroupedBookings(groupData);
     }

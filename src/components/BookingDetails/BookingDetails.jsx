@@ -4,7 +4,14 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import axios from "axios";
-import { format, getHours, getMinutes, setHours, setMinutes } from "date-fns";
+import {
+  addDays,
+  format,
+  getHours,
+  getMinutes,
+  setHours,
+  setMinutes,
+} from "date-fns";
 import "dayjs/locale/de";
 import React, { Fragment, useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -14,6 +21,7 @@ import { FormInputDate } from "../BasicControls/FormInputDate";
 import { FormInputDuration } from "../BasicControls/FormInputDuration";
 import { FormInputText } from "../BasicControls/FormInputText";
 import { FormInputTime } from "../BasicControls/FormInputTime";
+import Capacity from "../Bookings/Capacity/Capacity";
 
 const startTime = new Date();
 startTime.setHours(13);
@@ -43,6 +51,8 @@ const defaultValues = {
 
 const BookingDetails = ({ visible, callbackClose, selectedBooking }) => {
   const queryClient = useQueryClient();
+
+  const [capacityVisible, setCapacityVisible] = useState(false);
 
   const [customerList, setCustomerList] = useState([]);
   useEffect(() => {
@@ -103,6 +113,9 @@ const BookingDetails = ({ visible, callbackClose, selectedBooking }) => {
       endDate = setMinutes(endDate, getMinutes(endTime));
       setValue("Ende_Start", endDate);
     }
+    if (startDate && endDate) {
+      setCapacityVisible(true);
+    }
   }, [watchDates, setValue]);
 
   const onSubmit = async (data) => {
@@ -135,6 +148,7 @@ const BookingDetails = ({ visible, callbackClose, selectedBooking }) => {
 
   const handleClose = () => {
     reset(defaultValues);
+    setCapacityVisible(false);
     callbackClose();
   };
 
@@ -221,6 +235,13 @@ const BookingDetails = ({ visible, callbackClose, selectedBooking }) => {
                 label="Duration"
               />
             </Box>
+            {capacityVisible ? (
+              <Capacity
+                startDate={watchDates[0]}
+                endDate={addDays(watchDates[1], 1)}
+                scale={100}
+              />
+            ) : null}
           </Box>
         </DialogContent>
         <DialogActions sx={{ marginX: 2, marginBottom: 2 }}>
