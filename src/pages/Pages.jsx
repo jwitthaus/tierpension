@@ -3,7 +3,6 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
-import Billing from "./Billing";
 import Bookings from "./Bookings";
 import CalendarPage from "./CalendarPage";
 import ErrorPage from "./ErrorPage";
@@ -34,7 +33,6 @@ export default function Pages() {
             path="/calendar"
             element={<CalendarPage holidays={holidayData} />}
           />
-          <Route path="/billing" element={<Billing />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </BrowserRouter>

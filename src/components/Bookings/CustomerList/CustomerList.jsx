@@ -5,8 +5,9 @@ import BookingListItem from "../../BasicControls/BookingListItem";
 import styles from "./CustomerList.module.css";
 import { TimelineSettingsContext } from "../Timeline/TimelineSettingsProvider";
 
-export default function CustomerList(props) {
+export default function CustomerList({ itemClickedCallback }) {
   const { groupedBookings } = useContext(TimelineSettingsContext);
+
   return (
     <Box>
       <List
@@ -41,9 +42,7 @@ export default function CustomerList(props) {
                     medication="true"
                     intolerance="true"
                     label={booking.NameIntern}
-                    onClick={() =>
-                      props.scrollToDateCallback(new Date(booking.Beginn_Datum))
-                    }
+                    onClick={() => itemClickedCallback(booking)}
                   />
                 );
               })}

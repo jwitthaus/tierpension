@@ -37,6 +37,7 @@ export const TimelineSettingsProvider = ({ children }) => {
   const [bookings, setBookings] = useState([]);
   const [groupedBookings, setGroupedBookings] = useState([]);
   const [selectedBooking, setSelectedBooking] = useState(null);
+  const [bookingDetailsOpen, setBookingDetailsOpen] = useState(false);
 
   const dates = Array.from({ length: timelineLength }, (_, i) =>
     addDays(timelineStart, i)
@@ -119,6 +120,8 @@ export const TimelineSettingsProvider = ({ children }) => {
         dates,
         selectedBooking,
         setSelectedBooking,
+        bookingDetailsOpen,
+        setBookingDetailsOpen,
       }}
     >
       {children}

@@ -25,10 +25,54 @@ app.get("/customers", (req, res) => {
   });
 });
 
+app.post("/customers", (req, res) => {
+  const sql =
+    "INSERT INTO Kunden (`Vorname`, `Nachname`, `NameIntern`, `Mail`) VALUES (?)";
+  const values = [
+    req.body.Vorname,
+    req.body.Nachname,
+    `${req.body.Nachname}, ${req.body.Vorname}`, //NameIntern
+    req.body.Mail,
+  ];
+
+  db.query(sql, [values], (err, data) => {
+    if (err) {
+      console.log("error: " + err);
+      return res.json(err);
+    }
+    return res.json(data);
+  });
+});
+
 app.get("/bookings", (req, res) => {
   const sql = "SELECT * FROM buchungen";
   db.query(sql, (err, data) => {
     if (err) return res.json(err);
+    return res.json(data);
+  });
+});
+
+app.post("/bookings", (req, res) => {
+  const sql =
+    "INSERT INTO Buchungen (`Kunden_ID`, `Tier_ID`, `Beginn_Datum`, `Beginn_Start`, `Beginn_Zeitraum`, `Ende_Datum`, `Ende_Start`, `Ende_Zeitraum`) VALUES (?)";
+  console.log(req.body);
+  const values = [
+    req.body.Kunden_ID,
+    req.body.Tier_ID,
+    req.body.Beginn_Datum,
+    req.body.Beginn_Start,
+    req.body.Beginn_Zeitraum,
+    req.body.Ende_Datum,
+    req.body.Ende_Start,
+    req.body.Ende_Zeitraum,
+  ];
+
+  db.query(sql, [values], (err, data) => {
+    if (err) {
+      console.log("error: " + err);
+      return res.json(err);
+    }
+
     return res.json(data);
   });
 });
@@ -61,46 +105,21 @@ app.get("/booking", (req, res) => {
   });
 });
 
-app.post("/bookings", (req, res) => {
-  const sql =
-    "INSERT INTO Buchungen (`Kunden_ID`, `Tier_ID`, `Beginn_Datum`, `Beginn_Start`, `Beginn_Zeitraum`, `Ende_Datum`, `Ende_Start`, `Ende_Zeitraum`) VALUES (?)";
-  console.log(req.body);
-  const values = [
-    req.body.Kunden_ID,
-    req.body.Tier_ID,
-    req.body.Beginn_Datum,
-    req.body.Beginn_Start,
-    req.body.Beginn_Zeitraum,
-    req.body.Ende_Datum,
-    req.body.Ende_Start,
-    req.body.Ende_Zeitraum,
-  ];
+app.put("/booking", (req, res) => {
+  const quote = (val) => (typeof val === "string" ? `"${val}"` : val);
 
-  db.query(sql, [values], (err, data) => {
+  console.log(req.body.newData);
+
+  const sql = `UPDATE Buchungen SET ${Object.entries(req.body.newData)
+    .map(([field, value]) => `${field}=${quote(value)}`)
+    .join(", ")} WHERE LfdNr = ${req.body.selectedBooking.LfdNr}`;
+
+  db.query(sql, (err, data) => {
     if (err) {
       console.log("error: " + err);
       return res.json(err);
     }
 
-    return res.json(data);
-  });
-});
-
-app.post("/customers", (req, res) => {
-  const sql =
-    "INSERT INTO Kunden (`Vorname`, `Nachname`, `NameIntern`, `Mail`) VALUES (?)";
-  const values = [
-    req.body.Vorname,
-    req.body.Nachname,
-    `${req.body.Nachname}, ${req.body.Vorname}`, //NameIntern
-    req.body.Mail,
-  ];
-
-  db.query(sql, [values], (err, data) => {
-    if (err) {
-      console.log("error: " + err);
-      return res.json(err);
-    }
     return res.json(data);
   });
 });

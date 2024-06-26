@@ -96,7 +96,7 @@ const CalendarPage = (props) => {
     if (view === Views.WEEK) {
       const from = startOfWeek(date);
       const to = endOfWeek(date);
-      return `${format(from, "MMMM dd")} to ${format(to, "MMMM dd")}`;
+      return `${format(from, "MMMM dd")} - ${format(to, "dd")}`;
     }
     if (view === Views.MONTH) {
       return format(date, "MMMM yyyy");
@@ -141,8 +141,19 @@ const CalendarPage = (props) => {
   });
 
   return (
-    <Container sx={{ height: "80%" }}>
-      <Box sx={{ display: "flex", marginY: 2 }}>
+    <Container
+      sx={{
+        height: view === Views.WEEK || view === Views.DAY ? "160vh" : "60vh",
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", sm: "column", md: "row" },
+          gap: 2,
+          marginY: 2,
+        }}
+      >
         <Box
           sx={{
             flex: 1,
@@ -151,7 +162,7 @@ const CalendarPage = (props) => {
         >
           <Button
             variant="outlined"
-            sx={{ paddingY: 1 }}
+            sx={{ height: "42px" }}
             onClick={onTodayClick}
           >
             today
@@ -170,26 +181,32 @@ const CalendarPage = (props) => {
               <ChevronRightIcon />
             </IconButton>
           </Box>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flex: 1,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Typography sx={{ marginX: 2 }}>{dateText}</Typography>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <Typography sx={{ marginX: 1 }}>{dateText}</Typography>
+          </Box>
         </Box>
 
         <Box
           sx={{
-            flex: 1,
             display: "flex",
-            justifyContent: "flex-end",
+            justifyContent: {
+              xs: "flex-start",
+              sm: "flex-start",
+              md: "flex-end",
+            },
           }}
         >
-          <ButtonGroup gap={0} spacing={0} isattached="true">
+          <ButtonGroup
+            gap={0}
+            spacing={0}
+            isattached="true"
+            sx={{ height: "42px" }}
+          >
             {VIEW_OPTIONS.map(({ id, label }) => (
               <Button
                 key={id}

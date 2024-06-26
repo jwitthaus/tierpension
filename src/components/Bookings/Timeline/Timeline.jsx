@@ -15,46 +15,13 @@ const Timeline = () => {
     dates,
     selectedBooking,
     setSelectedBooking,
+    bookingDetailsOpen,
+    setBookingDetailsOpen,
   } = useContext(TimelineSettingsContext);
 
-  const queryClient = useQueryClient();
-  const [bookingDetailsOpen, setBookingDetailsOpen] = useState(false);
-
-  const fetchBookingData = async (bookingID) => {
-    const response = await axios.get(
-      `http://localhost:8081/booking?LfdNr=${bookingID}`
-    );
-    return response.data;
-  };
-
   function handleBookingSelected(booking) {
-    setSelectedBooking(booking);
+    setSelectedBooking(booking.LfdNr);
   }
-
-  const handleBookingClose = useCallback(() => {
-    setSelectedBooking(null);
-    setBookingDetailsOpen(false);
-    queryClient.invalidateQueries(["booking", selectedBooking]);
-  }, [queryClient, selectedBooking, setSelectedBooking]);
-
-  useEffect(() => {
-    if (selectedBooking) {
-    }
-  }, [selectedBooking]);
-
-  const { data } = useQuery(
-    ["booking", selectedBooking],
-    () => fetchBookingData(selectedBooking),
-    {
-      enabled: !!selectedBooking, // Die Abfrage wird nur ausgeführt, wenn eine `bookingID` ausgewählt wurde
-    }
-  );
-
-  useEffect(() => {
-    if (data) {
-      setBookingDetailsOpen(true); // Öffne das Detailfenster, wenn Daten geladen wurden
-    }
-  }, [data]);
 
   return (
     <div className={styles.barChartContainer}>
@@ -91,9 +58,7 @@ const Timeline = () => {
 
                 return (
                   <BookingBar
-                    callbackBarClicked={() =>
-                      handleBookingSelected(booking.LfdNr)
-                    }
+                    callbackBarClicked={() => handleBookingSelected(booking)}
                     key={booking.LfdNr} // Verwenden Sie eine eindeutige Kombination aus index und idx für den key
                     startPosition={startPosition}
                     width={width}
@@ -108,11 +73,6 @@ const Timeline = () => {
           );
         })}
       </div>
-      <BookingDetails
-        visible={bookingDetailsOpen}
-        callbackClose={handleBookingClose}
-        selectedBooking={data?.[0]}
-      />
     </div>
   );
 };

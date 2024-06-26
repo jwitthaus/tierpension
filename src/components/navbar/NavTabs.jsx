@@ -51,7 +51,7 @@ function a11yProps(index) {
 export default function NavTabs() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [data] = useState(["Bookings", "Calendar", "Billing"]);
+  const [data] = useState(["Bookings", "Calendar"]);
 
   // Get initial tab value from URL
   const getInitialTabValue = () => {

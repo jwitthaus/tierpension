@@ -1,11 +1,14 @@
-import React, { useContext, useEffect, useRef } from "react";
+import { useMediaQuery } from "@mui/material";
+import React, { useCallback, useContext, useEffect, useRef } from "react";
+import { useQuery, useQueryClient } from "react-query";
+import BookingDetails from "../components/BookingDetails/BookingDetails.jsx";
 import Capacity from "../components/Bookings/Capacity/Capacity";
 import CustomerList from "../components/Bookings/CustomerList/CustomerList";
 import Timeline from "../components/Bookings/Timeline/Timeline.jsx";
 import { TimelineSettingsContext } from "../components/Bookings/Timeline/TimelineSettingsProvider.jsx";
 import BookingsToolBar from "../components/Bookings/Toolbar/BookingsToolBar";
 import styles from "./Bookings.module.css";
-import { addDays, subDays } from "date-fns";
+import axios from "axios";
 
 export default function Bookings() {
   const {
@@ -14,9 +17,34 @@ export default function Bookings() {
     timelineStart,
     timelineEnd,
     calculatePercentage,
+    bookingDetailsOpen,
+    setBookingDetailsOpen,
+    setSelectedBooking,
+    selectedBooking,
   } = useContext(TimelineSettingsContext);
 
-  console.log(timelineStart + " " + timelineEnd);
+  const queryClient = useQueryClient();
+
+  const fetchBookingData = async (bookingID) => {
+    const response = await axios.get(
+      `http://localhost:8081/booking?LfdNr=${bookingID}`
+    );
+    return response.data;
+  };
+
+  const { data } = useQuery(
+    ["booking", selectedBooking],
+    () => fetchBookingData(selectedBooking),
+    {
+      enabled: !!selectedBooking, // Die Abfrage wird nur ausgeführt, wenn eine `bookingID` ausgewählt wurde
+    }
+  );
+
+  useEffect(() => {
+    if (data) {
+      setBookingDetailsOpen(true); // Öffne das Detailfenster, wenn Daten geladen wurden
+    }
+  }, [data]);
 
   const capacityRef = useRef(null);
   const timelineRef = useRef(null);
@@ -27,39 +55,18 @@ export default function Bookings() {
     timelineRef.current.scrollLeft = scrollPosition;
   }, [timelineScale, prevTimelineScale]);
 
-  //visible Days changed
-  /*useEffect(() => {
-    const relativeScrollPosition =
-      visibleDays === 31
-        ? (7 * timelineRef.current.scrollLeft) / 31
-        : (31 * timelineRef.current.scrollLeft) / 7;
-    const targetScale = (timelineLength / visibleDays) * 100;
-    animate(lastTimelineScale, targetScale, {
-      ease: "linear",
-      onUpdate: (latest) => {
-        setTimelineScale(latest);
-        //console.log("scale: " + latest);
-      },
-      onComplete: () => {
-        setLastTimelineScale(targetScale);
-        console.log(timelineScale);
-      },
-    });
-    animate(timelineRef.current.scrollLeft, relativeScrollPosition, {
-      ease: "linear",
-      onUpdate: (latest) => {
-        timelineRef.current.scrollLeft = latest;
-        capacityRef.current.scrollLeft = latest;
-        //console.log("scroll: " + latest);
-      },
-    });
-  }, [visibleDays, timelineLength, lastTimelineScale]);*/
-
   const handleScrollTimeline = (scroll) => {
     capacityRef.current.scrollLeft = scroll.target.scrollLeft;
   };
 
-  const scrollToDateCallback = (date) => {
+  const openBookingDetailsCallback = (booking) => {
+    console.log("open details");
+    setSelectedBooking(booking.LfdNr);
+  };
+
+  const scrollToDateCallback = (booking) => {
+    console.log("scroll to date");
+    const date = new Date(booking.Beginn_Datum);
     const { startPosition } = calculatePercentage(date, timelineStart); //position in %
     const scrollPosition =
       (startPosition * timelineRef.current?.offsetWidth) / 100;
@@ -69,6 +76,24 @@ export default function Bookings() {
       behavior: "smooth",
     });
   };
+
+  const handleBookingDetailsClose = useCallback(() => {
+    setSelectedBooking(null);
+    setBookingDetailsOpen(false);
+    queryClient.invalidateQueries(["booking", selectedBooking]);
+  }, [queryClient, selectedBooking, setSelectedBooking]);
+
+  const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  const listItemProps = {
+    itemClickedCallback: isSmallScreen
+      ? openBookingDetailsCallback
+      : scrollToDateCallback,
+  };
+
+  useEffect(() => {
+    console.log(isSmallScreen);
+  }, [isSmallScreen]);
+
   return (
     <>
       <div className={styles.bookings}>
@@ -86,7 +111,7 @@ export default function Bookings() {
         </div>
         <div className={styles.bottomarea}>
           <div className={styles.customerList}>
-            <CustomerList scrollToDateCallback={scrollToDateCallback} />
+            <CustomerList {...listItemProps} />
           </div>
           <div
             ref={timelineRef}
@@ -98,6 +123,11 @@ export default function Bookings() {
           </div>
         </div>
       </div>
+      <BookingDetails
+        visible={bookingDetailsOpen}
+        callbackClose={handleBookingDetailsClose}
+        selectedBooking={data?.[0]}
+      />
     </>
   );
 }

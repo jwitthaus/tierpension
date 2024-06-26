@@ -2,17 +2,15 @@ import { Box, Paper } from "@mui/material";
 import { BarChart } from "@mui/x-charts/BarChart";
 import {
   addDays,
-  endOfDay,
-  startOfDay,
-  subDays,
   differenceInCalendarDays,
+  endOfDay,
   format,
   isWithinInterval,
+  startOfDay,
 } from "date-fns";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { TimelineSettingsContext } from "../Timeline/TimelineSettingsProvider";
 import styles from "./Capacity.module.css";
-import { CapacityContext } from "./CapacityProvider";
 
 const CustomItemTooltipContent = (props) => {
   const { dataIndex, series, axisValue } = props;

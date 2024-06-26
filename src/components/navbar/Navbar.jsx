@@ -18,7 +18,7 @@ import { useNavigate } from "react-router-dom";
 import NavTabs from "./NavTabs";
 import BookingDetails from "../BookingDetails/BookingDetails";
 
-const navItems = ["Bookings", "Calendar", "Billing"];
+const navItems = ["Bookings", "Calendar"];
 
 function Navbar(props) {
   const navigate = useNavigate();
@@ -42,7 +42,10 @@ function Navbar(props) {
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
-      <Typography variant="h6" sx={{ my: 1.5, mx: 2.5 }}>
+      <Typography
+        variant="h6"
+        sx={{ py: 1.5, px: 2.5, backgroundColor: "#243380", color: "white" }}
+      >
         Pet Hotel Manager
       </Typography>
       <Divider />
@@ -68,7 +71,11 @@ function Navbar(props) {
     <Box sx={{ display: "flex" }}>
       <AppBar component="nav" sx={{ width: "100%" }}>
         <Toolbar
-          sx={{ width: "100%", display: "flex", justifyItems: "space-between" }}
+          sx={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "space-between",
+          }}
         >
           <IconButton
             color="inherit"

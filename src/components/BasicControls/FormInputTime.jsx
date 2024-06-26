@@ -8,7 +8,9 @@ export const FormInputTime = ({ name, control, label }) => {
     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={de}>
       <Controller
         name={name}
-        rules={{ required: "required" }}
+        rules={{
+          required: "required",
+        }}
         control={control}
         render={({ field: { onChange, value }, fieldState: { error } }) => {
           return (

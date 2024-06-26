@@ -21,7 +21,6 @@ const barChartsParams = {
 
 const CustomItemTooltipContent = (props) => {
   const { itemData, series } = props;
-  console.log(series);
   return (
     <Paper sx={{ padding: 3, backgroundColor: series.color }}>
       <p>{series.label}</p>

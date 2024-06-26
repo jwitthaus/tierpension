@@ -6,11 +6,14 @@ import DialogTitle from "@mui/material/DialogTitle";
 import axios from "axios";
 import {
   addDays,
+  differenceInCalendarDays,
   format,
-  getHours,
-  getMinutes,
-  setHours,
-  setMinutes,
+  getDate,
+  getMonth,
+  getYear,
+  setDate,
+  setMonth,
+  setYear,
 } from "date-fns";
 import "dayjs/locale/de";
 import React, { Fragment, useEffect, useState } from "react";
@@ -67,7 +70,16 @@ const BookingDetails = ({ visible, callbackClose, selectedBooking }) => {
     fetchAllCustomers();
   }, []);
 
-  const { handleSubmit, reset, control, setValue } = useForm({
+  const {
+    handleSubmit,
+    reset,
+    control,
+    setValue,
+    getValues,
+    setError,
+    clearErrors,
+    formState: { isDirty, dirtyFields },
+  } = useForm({
     defaultValues: defaultValues,
   });
 
@@ -103,44 +115,105 @@ const BookingDetails = ({ visible, callbackClose, selectedBooking }) => {
   //denn bei der Selektion der Zeit wird wirklich nur die Zeit ausgewählt und der Tag würde nicht dem selektierten Datum entsprechen
   useEffect(() => {
     let [startDate, endDate] = watchDates;
-    if (startDate) {
-      startDate = setHours(startDate, getHours(startTime));
-      startDate = setMinutes(startDate, getMinutes(startTime));
-      setValue("Beginn_Start", startDate);
+    /*if ("Beginn_Datum" in dirtyFields) {
+      let newStartTime = getValues("Beginn_Start");
+      newStartTime = setDate(newStartTime, getDate(startDate));
+      newStartTime = setMonth(newStartTime, getMonth(startDate));
+      newStartTime = setYear(newStartTime, getYear(startDate));
+      setValue("Beginn_Start", newStartTime, { shouldDirty: true }); //das Feld auf dirty setzen, damit es auch in den put an axios geschickt wird
     }
-    if (endDate) {
-      endDate = setHours(endDate, getHours(endTime));
-      endDate = setMinutes(endDate, getMinutes(endTime));
-      setValue("Ende_Start", endDate);
-    }
+    if ("Ende_Datum" in dirtyFields) {
+      let newEndTime = getValues("Ende_Start");
+      newEndTime = setDate(newEndTime, getDate(endDate));
+      newEndTime = setMonth(newEndTime, getMonth(endDate));
+      newEndTime = setYear(newEndTime, getYear(endDate));
+      setValue("Ende_Start", newEndTime, { shouldDirty: true }); //das Feld auf dirty setzen, damit es auch in den put an axios geschickt wird
+    }*/
+    //validate if start date is smaller than end date and set error state
     if (startDate && endDate) {
-      setCapacityVisible(true);
-    }
-  }, [watchDates, setValue]);
-
-  const onSubmit = async (data) => {
-    //create new Customer selected
-    if (watchCustomerSelection === -1) {
-      try {
-        await axios
-          .post("http://localhost:8081/customers", data)
-          .then((response) => {
-            //Kunden ID of added customer
-            data.Kunden_ID = response.data.insertId; //we only need Kunden_ID
-          });
-      } catch (error) {
-        console.log(error);
+      if (differenceInCalendarDays(endDate, startDate) >= 0) {
+        clearErrors(["Beginn_Datum", "Ende_Datum"]);
+        setCapacityVisible(true);
+      } else {
+        setCapacityVisible(false);
+        setError("Beginn_Datum", {
+          type: "custom",
+          message: "later than end date",
+        });
+        setError("Ende_Datum", {
+          type: "custom",
+          message: "earlier than start date",
+        });
       }
     }
-    data.Kunden_ID = data.Kunden_ID.Nummer; //we only need Kunden_ID
+  }, [watchDates, setValue, dirtyFields, getValues, setError]);
+
+  const cleanData = (data) =>
+    Object.entries(data)
+      .filter(([key, value]) => value !== undefined)
+      .reduce((obj, [key, value]) => {
+        obj[key] = value;
+        return obj;
+      }, {});
+
+  const dirtyValues = (dirtyFields, allValues) => {
+    if (dirtyFields === true || Array.isArray(dirtyFields)) return allValues;
+    // Here, we have an object
+    return cleanData(
+      Object.fromEntries(
+        Object.keys(dirtyFields).map((key) => [
+          key,
+          dirtyFields[key]
+            ? dirtyValues(dirtyFields[key], allValues[key])
+            : undefined,
+        ])
+      )
+    );
+  };
+
+  const onSubmit = async (data) => {
+    //format all date data before preparing for SQL update
+    //this is required format within the database (otherwise post failes)
     data.Beginn_Datum = format(data.Beginn_Datum, "yyyy-MM-dd HH:mm:ss");
     data.Beginn_Start = format(data.Beginn_Start, "yyyy-MM-dd HH:mm:ss");
     data.Ende_Datum = format(data.Ende_Datum, "yyyy-MM-dd HH:mm:ss");
     data.Ende_Start = format(data.Ende_Start, "yyyy-MM-dd HH:mm:ss");
-    try {
-      await axios.post("http://localhost:8081/bookings", data);
-    } catch (error) {
-      console.log(error);
+    console.log(data.Beginn_Datum);
+    if (selectedBooking) {
+      if (isDirty) {
+        const newData = dirtyValues(dirtyFields, data);
+
+        try {
+          await axios
+            .put("http://localhost:8081/booking", { selectedBooking, newData })
+            .then((response) => {
+              //console.log(response);
+            });
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    } else {
+      //"create new Customer" selected
+      if (watchCustomerSelection === -1) {
+        try {
+          await axios
+            .post("http://localhost:8081/customers", data)
+            .then((response) => {
+              //Kunden ID of added customer
+              data.Kunden_ID = response.data.insertId; //we only need Kunden_ID
+            });
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      data.Kunden_ID = data.Kunden_ID.Nummer; //we only need Kunden_ID
+
+      try {
+        await axios.post("http://localhost:8081/bookings", data);
+      } catch (error) {
+        console.log(error);
+      }
     }
     queryClient.invalidateQueries("bookings-with-customers");
     handleClose();
@@ -196,44 +269,57 @@ const BookingDetails = ({ visible, callbackClose, selectedBooking }) => {
             <Box
               sx={{
                 display: "flex",
-                flexDirection: { xs: "column", sm: "row" },
-                gap: 2,
+                flexDirection: "row",
+                gap: 4,
+                marginTop: 1,
               }}
             >
-              <FormInputDate
-                name="Beginn_Datum"
-                control={control}
-                label="Start date"
-              />
-              <FormInputTime
-                name="Beginn_Start"
-                control={control}
-                label="Time"
-              />
-              <FormInputDuration
-                name="Beginn_Zeitraum"
-                control={control}
-                label="Duration"
-              />
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: { xs: "column", sm: "row" },
-                gap: 2,
-              }}
-            >
-              <FormInputDate
-                name="Ende_Datum"
-                control={control}
-                label="End date"
-              />
-              <FormInputTime name="Ende_Start" control={control} label="Time" />
-              <FormInputDuration
-                name="Ende_Zeitraum"
-                control={control}
-                label="Duration"
-              />
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 2,
+                }}
+              >
+                <FormInputDate
+                  name="Beginn_Datum"
+                  control={control}
+                  label="Start date"
+                />
+                <FormInputTime
+                  name="Beginn_Start"
+                  control={control}
+                  label="Time"
+                />
+                <FormInputDuration
+                  name="Beginn_Zeitraum"
+                  control={control}
+                  label="Duration"
+                />
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 2,
+                }}
+              >
+                <FormInputDate
+                  name="Ende_Datum"
+                  control={control}
+                  label="End date"
+                />
+                <FormInputTime
+                  name="Ende_Start"
+                  control={control}
+                  label="Time"
+                />
+                <FormInputDuration
+                  name="Ende_Zeitraum"
+                  control={control}
+                  label="Duration"
+                />
+              </Box>
             </Box>
             {capacityVisible ? (
               <Capacity
@@ -256,11 +342,5 @@ const BookingDetails = ({ visible, callbackClose, selectedBooking }) => {
     </Fragment>
   );
 };
-
-/*
-{watchStartDate && watchEndDate ? (
-              <Capacity timelineStart={startDate} timelineEnd={endDate} />
-            ) : null}
-             */
 
 export default BookingDetails;
