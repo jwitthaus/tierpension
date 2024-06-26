@@ -115,7 +115,7 @@ const BookingDetails = ({ visible, callbackClose, selectedBooking }) => {
   //denn bei der Selektion der Zeit wird wirklich nur die Zeit ausgewählt und der Tag würde nicht dem selektierten Datum entsprechen
   useEffect(() => {
     let [startDate, endDate] = watchDates;
-    /*if ("Beginn_Datum" in dirtyFields) {
+    if ("Beginn_Datum" in dirtyFields) {
       let newStartTime = getValues("Beginn_Start");
       newStartTime = setDate(newStartTime, getDate(startDate));
       newStartTime = setMonth(newStartTime, getMonth(startDate));
@@ -128,7 +128,7 @@ const BookingDetails = ({ visible, callbackClose, selectedBooking }) => {
       newEndTime = setMonth(newEndTime, getMonth(endDate));
       newEndTime = setYear(newEndTime, getYear(endDate));
       setValue("Ende_Start", newEndTime, { shouldDirty: true }); //das Feld auf dirty setzen, damit es auch in den put an axios geschickt wird
-    }*/
+    }
     //validate if start date is smaller than end date and set error state
     if (startDate && endDate) {
       if (differenceInCalendarDays(endDate, startDate) >= 0) {
