@@ -1,14 +1,14 @@
 import { useMediaQuery } from "@mui/material";
+import axios from "axios";
 import React, { useCallback, useContext, useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "react-query";
 import BookingDetails from "../components/BookingDetails/BookingDetails.jsx";
 import Capacity from "../components/Bookings/Capacity/Capacity";
 import CustomerList from "../components/Bookings/CustomerList/CustomerList";
+import DateColumn from "../components/Bookings/Timeline/DateColumn.jsx";
 import Timeline from "../components/Bookings/Timeline/Timeline.jsx";
 import { TimelineSettingsContext } from "../components/Bookings/Timeline/TimelineSettingsProvider.jsx";
 import BookingsToolBar from "../components/Bookings/Toolbar/BookingsToolBar";
-import styles from "./Bookings.module.css";
-import axios from "axios";
 
 export default function Bookings() {
   const {
@@ -21,6 +21,7 @@ export default function Bookings() {
     setBookingDetailsOpen,
     setSelectedBooking,
     selectedBooking,
+    dates,
   } = useContext(TimelineSettingsContext);
 
   const queryClient = useQueryClient();
@@ -44,7 +45,7 @@ export default function Bookings() {
     if (data) {
       setBookingDetailsOpen(true); // Öffne das Detailfenster, wenn Daten geladen wurden
     }
-  }, [data]);
+  }, [data, setBookingDetailsOpen]);
 
   const capacityRef = useRef(null);
   const timelineRef = useRef(null);
@@ -60,12 +61,10 @@ export default function Bookings() {
   };
 
   const openBookingDetailsCallback = (booking) => {
-    console.log("open details");
     setSelectedBooking(booking.LfdNr);
   };
 
   const scrollToDateCallback = (booking) => {
-    console.log("scroll to date");
     const date = new Date(booking.Beginn_Datum);
     const { startPosition } = calculatePercentage(date, timelineStart); //position in %
     const scrollPosition =
@@ -81,7 +80,7 @@ export default function Bookings() {
     setSelectedBooking(null);
     setBookingDetailsOpen(false);
     queryClient.invalidateQueries(["booking", selectedBooking]);
-  }, [queryClient, selectedBooking, setSelectedBooking]);
+  }, [queryClient, selectedBooking, setSelectedBooking, setBookingDetailsOpen]);
 
   const isSmallScreen = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const listItemProps = {
@@ -90,32 +89,42 @@ export default function Bookings() {
       : scrollToDateCallback,
   };
 
-  useEffect(() => {
-    console.log(isSmallScreen);
-  }, [isSmallScreen]);
-
   return (
     <>
-      <div className={styles.bookings}>
-        <div className={styles.toparea}>
-          <div className={styles.toolbar}>
+      <div className="flex flex-col">
+        <div className="w-full flex fixed bg-white z-30 pt-4">
+          <div className="w-80">
             <BookingsToolBar />
           </div>
-          <div ref={capacityRef} className={styles.capacity}>
+          <div ref={capacityRef} className="flex-1 w-full overflow-hidden">
             <Capacity
               startDate={timelineStart}
               endDate={timelineEnd}
               scale={timelineScale}
             />
+            <div className="flex w-full">
+              {dates.map((date, index) => {
+                //date bar needs to be part of Capacity container to avoid scrolling out of view when scrolling down
+                const { width } = calculatePercentage(new Date(), new Date());
+                console.log("width date " + width);
+                return (
+                  <DateColumn
+                    key={index}
+                    date={date}
+                    width={width}
+                  ></DateColumn>
+                );
+              })}
+            </div>
           </div>
         </div>
-        <div className={styles.bottomarea}>
-          <div className={styles.customerList}>
+        <div className="w-full flex mt-28">
+          <div className="w-80 pt-8">
             <CustomerList {...listItemProps} />
           </div>
           <div
             ref={timelineRef}
-            className={styles.timeline}
+            className="flex-1 w-full overflow-x-scroll overflow-y-hidden bg-neutral-100"
             onScroll={handleScrollTimeline}
             //onMouseDown={handleMouseDownTimeline}
           >

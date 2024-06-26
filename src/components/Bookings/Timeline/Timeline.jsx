@@ -1,33 +1,23 @@
-import axios from "axios";
 import { differenceInCalendarDays } from "date-fns";
-import React, { useCallback, useContext, useEffect, useState } from "react";
-import { useQuery, useQueryClient } from "react-query";
-import BookingDetails from "../../BookingDetails/BookingDetails";
+import React, { useContext } from "react";
 import BackgroundColumns from "./BackgroundColumns";
 import BookingBar from "./BookingBar";
-import styles from "./Timeline.module.css";
 import { TimelineSettingsContext } from "./TimelineSettingsProvider";
 
 const Timeline = () => {
-  const {
-    groupedBookings,
-    calculatePercentage,
-    dates,
-    selectedBooking,
-    setSelectedBooking,
-    bookingDetailsOpen,
-    setBookingDetailsOpen,
-  } = useContext(TimelineSettingsContext);
+  const { groupedBookings, calculatePercentage, dates, setSelectedBooking } =
+    useContext(TimelineSettingsContext);
 
   function handleBookingSelected(booking) {
     setSelectedBooking(booking.LfdNr);
   }
 
   return (
-    <div className={styles.barChartContainer}>
-      <div className={styles.dayColumns}>
+    <div className="whitespace-nowrap relative">
+      <div className="absolute flex w-full h-full">
         {dates.map((date, index) => {
           const { width } = calculatePercentage(new Date(), new Date());
+          console.log("width background " + width);
           return (
             <BackgroundColumns
               key={index}
@@ -37,7 +27,7 @@ const Timeline = () => {
           );
         })}
       </div>
-      <div className={styles.barChart}>
+      <div className="relative flex flex-col z-20 pt-8">
         {groupedBookings.map((category, index) => {
           return (
             <React.Fragment key={index}>

@@ -10,7 +10,6 @@ import {
 } from "date-fns";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { TimelineSettingsContext } from "../Timeline/TimelineSettingsProvider";
-import styles from "./Capacity.module.css";
 
 const CustomItemTooltipContent = (props) => {
   const { dataIndex, series, axisValue } = props;
@@ -19,20 +18,20 @@ const CustomItemTooltipContent = (props) => {
   const red = series[2].data[dataIndex];
   const isOverbooked = red > 0;
   const overOrUnderBooked = isOverbooked ? "overbooked" : "free capacity";
-  const style = {
-    color: `${isOverbooked ? "#FE5019" : "#87EA32"}`,
-  };
+  const color = `${isOverbooked ? "text-failed" : "text-success"}`;
   return (
     <Paper elevation={3} sx={{ overflow: "hidden" }}>
-      <div className={styles.popoverHeader}>
+      <div className="font-semibold py-4 px-8 bg-primary-dark-blue text-white text-sm">
         <p>{format(axisValue, "do LLLL yy")}</p>
       </div>
-      <div className={styles.bookingContainer}>
-        <div className={styles.booking}>
+      <div className="py-4 px-8">
+        <div className="text-lg font-semibold flex justify-between gap-4">
           <p>bookings</p>
           <p>{grey + red}</p>
         </div>
-        <div className={styles.booking} style={style}>
+        <div
+          className={`${color} text-lg font-semibold flex justify-between gap-4`}
+        >
           <p>{overOrUnderBooked}</p>
           <p>{isOverbooked ? red : green}</p>
         </div>
@@ -98,11 +97,7 @@ export default function Capacity({ startDate, endDate, scale }) {
 
   const [colors] = React.useState(["#f4f4f4", "#87EA32", "#FE5019"]);
   return (
-    <Box
-      ref={capacityRef}
-      className={styles.capacity}
-      sx={{ width: `${scale}%` }}
-    >
+    <Box ref={capacityRef} className="h-24" sx={{ width: `${scale}%` }}>
       <BarChart
         skipAnimation={true}
         margin={{ top: 0, left: 0, right: 0, bottom: 0 }}

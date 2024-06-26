@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
 import Bookings from "./Bookings";
-import CalendarPage from "./CalendarPage";
+import Calendars from "./Calendars";
 import ErrorPage from "./ErrorPage";
 
 export default function Pages() {
@@ -31,7 +31,7 @@ export default function Pages() {
           <Route path="/bookings" element={<Bookings />} />
           <Route
             path="/calendar"
-            element={<CalendarPage holidays={holidayData} />}
+            element={<Calendars holidays={holidayData} />}
           />
           <Route path="*" element={<ErrorPage />} />
         </Routes>

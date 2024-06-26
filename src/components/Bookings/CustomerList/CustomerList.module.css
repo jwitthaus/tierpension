@@ -1,8 +1,0 @@
-.toolbar {
-  position: fixed;
-  z-index: 100;
-}
-
-.customerList {
-  overflow: auto;
-}

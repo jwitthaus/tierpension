@@ -1,6 +1,5 @@
-import React from "react";
-import styles from "./BookingBar.module.css";
 import { Paper } from "@mui/material";
+import React from "react";
 
 const BookingBar = ({ startPosition, width, label, callbackBarClicked }) => {
   const style = {
@@ -9,9 +8,15 @@ const BookingBar = ({ startPosition, width, label, callbackBarClicked }) => {
   };
 
   return (
-    <Paper className={styles.bar} style={style} onClick={callbackBarClicked}>
-      {label}
-    </Paper>
+    <div className="py-1 h-12">
+      <Paper
+        className="relative h-full flex flex-col justify-center pl-4"
+        style={style}
+        onClick={callbackBarClicked}
+      >
+        {label}
+      </Paper>
+    </div>
   );
 };
 

@@ -79,7 +79,11 @@ export const TimelineSettingsProvider = ({ children }) => {
 
   // Function to calculate the percentage difference between two dates
   const calculatePercentage = (startDate, endDate) => {
-    //hier noch die Logik einbauen falls der Start Termin in der Vergangenheit liegt
+    //wenn startDate vor dem TimelineStart liegt, dass muss der Balken verkürzt werden und startet bei timelineStart
+    startDate =
+      differenceInCalendarDays(timelineStart, startDate) < 0
+        ? startDate
+        : timelineStart;
     const startPosition =
       (differenceInCalendarDays(startDate, timelineStart) / timelineLength) *
       timelineScale;

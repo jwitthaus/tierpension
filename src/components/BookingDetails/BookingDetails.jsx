@@ -146,7 +146,7 @@ const BookingDetails = ({ visible, callbackClose, selectedBooking }) => {
         });
       }
     }
-  }, [watchDates, setValue, dirtyFields, getValues, setError]);
+  }, [watchDates, setValue, dirtyFields, getValues, setError, clearErrors]);
 
   const cleanData = (data) =>
     Object.entries(data)
@@ -178,7 +178,6 @@ const BookingDetails = ({ visible, callbackClose, selectedBooking }) => {
     data.Beginn_Start = format(data.Beginn_Start, "yyyy-MM-dd HH:mm:ss");
     data.Ende_Datum = format(data.Ende_Datum, "yyyy-MM-dd HH:mm:ss");
     data.Ende_Start = format(data.Ende_Start, "yyyy-MM-dd HH:mm:ss");
-    console.log(data.Beginn_Datum);
     if (selectedBooking) {
       if (isDirty) {
         const newData = dirtyValues(dirtyFields, data);

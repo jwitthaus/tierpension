@@ -55,7 +55,6 @@ app.get("/bookings", (req, res) => {
 app.post("/bookings", (req, res) => {
   const sql =
     "INSERT INTO Buchungen (`Kunden_ID`, `Tier_ID`, `Beginn_Datum`, `Beginn_Start`, `Beginn_Zeitraum`, `Ende_Datum`, `Ende_Start`, `Ende_Zeitraum`) VALUES (?)";
-  console.log(req.body);
   const values = [
     req.body.Kunden_ID,
     req.body.Tier_ID,
@@ -107,8 +106,6 @@ app.get("/booking", (req, res) => {
 
 app.put("/booking", (req, res) => {
   const quote = (val) => (typeof val === "string" ? `"${val}"` : val);
-
-  console.log(req.body.newData);
 
   const sql = `UPDATE Buchungen SET ${Object.entries(req.body.newData)
     .map(([field, value]) => `${field}=${quote(value)}`)
